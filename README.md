@@ -1,2 +1,2 @@
 # loteria
-Bolão da loteria da fámilia
+Bolão da família

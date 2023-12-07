@@ -1,0 +1,16 @@
+#!/usr/bin/env php
+<?php
+
+//http://patorjk.com/software/taag/#p=display&h=0&v=0&f=Big&t=Temperature
+print <<< ASCII
+
+  _                _                   _         
+ | |              | |                 (_)        
+ | |        ___   | |_    ___   _ __   _    __ _ 
+ | |       / _ \  | __|  / _ \ | '__| | |  / _` |
+ | |____  | (_) | | |_  |  __/ | |    | | | (_| |
+ |______|  \___/   \__|  \___| |_|    |_|  \__,_|
+                                                                                                  
+
+
+ASCII;

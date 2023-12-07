@@ -1,0 +1,55 @@
+{# templates/login/login.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} :: Autenticação{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active"><i class="bi bi-door-closed"></i> Autenticação</li>
+    {% endblock %}
+
+{% block body %}
+    {% if error %}
+        <div class="container-fluid">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill"></i> {{ error.messageKey|trans(error.messageData, 'security') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'close'|trans([],'label') }}"></button>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-sm-8 col-md-6 col-xl-4 mx-sm-auto col-12">
+            <form action="{{ path('app_login') }}" method="post">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <div class="card">
+                    <div class="card-header bg-gradient">
+                        <h1 class="h4 my-0">Autenticação</h1>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="mb-3">
+                            <label for="username" class="form-label">E-mail</label>
+                            <input type="text" class="form-control" id="username" name="_username" value="{{ last_username }}" autocomplete="username">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Senha</label>
+                            <input type="password" class="form-control" id="password" name="_password" autocomplete="current-password">
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="remember_me" name="_remember_me" checked>
+                                <label for="remember_me" class="form-check-label">Ficar conectado</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-gradient">
+                        <div class="d-flex justify-content-between">
+                            <a class="btn btn-secondary bg-gradient btn-sm shadow-sm" href="{{ path('app_login') }}"><i class="fa-solid fa-broom"></i> Limpar</a>
+                            <button type="submit" class="btn btn-primary bg-gradient btn-sm shadow-sm" data-loading="true"><i class="bi bi-door-open-fill"></i> Entrar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
