@@ -1,0 +1,73 @@
+{# templates/concurso/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} :: Concurso{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active"><i class="bi bi-suit-club"></i> Concurso</li>
+    {% endblock %}
+
+{% block body %}
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h1 class="h4 m-0"><i class="bi bi-suit-club"></i> Concurso</h1>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <select name="loteria" id="loteria" class="form-select">
+                    <option value{% if not app.request.get('loteria') %} selected{% endif %}>Selecione uma loteria</option>
+                    {% for loteria in loterias %}
+                        <option value="{{ loteria.id }}"{% if loteria.id == app.request.get('loteria') %} selected{% endif %}>{{ loteria.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Loteria</th>
+                            <th>Concurso</th>
+                            <th>Dezenas</th>
+                            <th>Apurado</th>
+                            <th>Município</th>
+                            <th>UF</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        {% for concurso in paginator.result %}
+                            <tr>
+                                <td>{{ concurso.loteria.nome }}</td>
+                                <td class="text-end">{{ concurso.numero }}</td>
+                                <td class="text-end">{{ concurso.dezena|join(', ') }}</td>
+                                <td class="text-end">
+                                    {% if concurso.apuracaoData %}
+                                        {{ concurso.apuracaoData|date('d/m/Y','America/Sao_Paulo') }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>{{ concurso.municipio }}</td>
+                                <td>{{ concurso.uf }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">Nenhum registro encontrado</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            {% include '_paginator.html.twig' %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts_footer %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/concurso/index.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/_paginator.js') }}"></script>
+{% endblock %}

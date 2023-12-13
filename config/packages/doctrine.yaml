@@ -6,6 +6,9 @@ doctrine:
         # either here or in the DATABASE_URL env var (see .env file)
         #server_version: '15'
     orm:
+        dql:
+            numeric_functions:
+                json_contains: DoctrineExtensions\Query\Mysql\JsonContains
         auto_generate_proxy_classes: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
@@ -15,6 +18,25 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+        second_level_cache:
+            region_cache_driver:
+                type: pool
+                pool: cache.app
+            region_lock_lifetime: 60
+            log_enabled: true
+            region_lifetime: 3600
+            enabled: true
+            regions:
+                usuario_entity_region:
+                    cache_driver:
+                        type: service
+                        id: cache.app
+                    lifetime: 300
+                loteria_region:
+                    cache_driver:
+                        type: service
+                        id: cache.app
+                    lifetime: 86400
 
 when@test:
     doctrine:

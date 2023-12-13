@@ -1,0 +1,26 @@
+{# templates/reset_password/reset.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} :: Recuperar senha{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active"><i class="bi bi-key"></i> Recuperar senha</li>
+    {% endblock %}
+
+{% block body %}
+    {{ form_start(resetForm, {'attr': {'data-loading': 'true'}}) }}
+    {{ form_errors(resetForm) }}
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h1 class="h4 m-0"><i class="bi bi-key"></i> Recuperar senha</h1>
+        </div>
+        <div class="card-body">
+            {{ form_row(resetForm.plainPassword) }}
+        </div>
+        <div class="card-footer bg-gradient text-end">
+            <button type="submit" class="btn btn-primary bg-gradient btn-sm"><i class="bi bi-key"></i> Recuperar senha</button>
+        </div>
+    </div>
+    {{ form_end(resetForm) }}
+{% endblock %}
+

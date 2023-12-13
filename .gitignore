@@ -28,3 +28,8 @@
 ###> phpstan/phpstan ###
 phpstan.neon
 ###< phpstan/phpstan ###
+
+###> Loteria ###
+upload/bolao/comprovante_aposta/*
+upload/bolao/comprovante_apostador/*
+###< Loteria ###

@@ -13,7 +13,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div><h1 class="h4 m-0"><i class="fa-solid fa-people-group"></i> Bolão</h1></div>
                 <div>
-                    <a href="{{ path('app_bolao_new') }}" class="btn btn-primary btn-sm bg-gradient shadow-sm"><i class="bi bi-plus"></i> Novo</a>
+                    <a data-loading="true" href="{{ path('app_bolao_new') }}" class="btn btn-primary btn-sm bg-gradient shadow-sm"><i class="bi bi-plus"></i> {{ 'btn.new'|trans({}, 'label') }}</a>
                 </div>
             </div>
         </div>
@@ -25,34 +25,59 @@
                             <th>Nome</th>
                             <th>Loteria</th>
                             <th>Concurso</th>
-                            <th>Apostadores</th>
-                            <th>Apostas</th>
-                            <th>Ações</th>
+                            <th class="d-none d-none d-xl-table-cell">Apostadores</th>
+                            <th class="d-none d-none d-xl-table-cell">Apostas</th>
+                            <th>Total</th>
+                            <th class="text-center">Ações</th>
                         </tr>
                     </thead>
                     <tbody class="table-group-divider">
-                        {% for item in boloes %}
+                        {% for i in boloes %}
                             <tr>
-                                <td>{{ item.bolao.nome }}</td>
-                                <td>{{ item.bolao.loteria.nome }}</td>
-                                <td class="text-end">{{ item.bolao.concurso.numero }}</td>
-                                <td class="text-end">0</td>
-                                <td class="text-end">0</td>
-                                <td class="text-center">
-                                    <a href="{{ path('app_bolao_edit', {'id': item.bolao.id}) }}" class="btn btn-sm btn-primary shadow-sm"><i class="bi bi-pencil-square"></i> <span class="d-none d-lg-inline-block">Alterar</span></a>
+                                <td>{{ i.bolao.nome }}</td>
+                                <td>{{ i.bolao.concurso.loteria.nome }}</td>
+                                <td class="text-end">{{ i.bolao.concurso.numero }}</td>
+                                <td class="text-end d-none d-xl-table-cell">{{ i.apostadores }}</td>
+                                <td class="text-end d-none d-xl-table-cell">{{ i.apostas }}</td>
+                                <td class="text-end">
+                                    <span class="d-none d-lg-inline-block">(cotas: {{ (i.total > 0) ? i.total : 0 }}) </span>
+                                    {{ (i.bolao.valorCota > 0) ? (i.total * i.bolao.valorCota)|format_currency('BRL') : 'valor da cota não inforado' }}
+                                </td>
+                                <td class="text-center d-grid gap-1 d-md-block">
+                                    <a data-loading="true" href="{{ path('app_bolao_apostador_index', {'id': i.bolao.id}) }}" class="btn btn-sm btn-secondary shadow-sm">
+                                        <i class="bi bi-people"></i> <span class="d-none d-lg-inline-block">Apostadores</span>
+                                    </a>
+                                    <a data-loading="true" href="{{ path('app_bolao_aposta_index', {'id': i.bolao.id}) }}" class="btn btn-sm btn-secondary shadow-sm">
+                                        <i class="bi bi-ticket-perforated"></i> <span class="d-none d-lg-inline-block">Apostas</span>
+                                    </a>
+                                    {% if i.bolao.comprovanteAposta and is_granted('BOLAO_DOWNLOAD', i.bolao) %}
+                                        <a href="{{ path('app_bolao_download', {'id': i.bolao.id}) }}" class="btn btn-sm btn-secondary shadow-sm">
+                                            <i class="bi bi-file-arrow-down"></i> <span class="d-none d-lg-inline-block">Comprovante</span>
+                                        </a>
+                                    {% endif %}
+                                    {% if is_granted('BOLAO_DELETE', i.bolao) %}
+                                        <a href="{{ path('app_bolao_delete', {'id': i.bolao.id}) }}" class="btn btn-sm btn-danger shadow-sm">
+                                            <i class="bi bi-trash"></i> <span class="d-none d-lg-inline-block">Excluir</span>
+                                        </a>
+                                    {% endif %}
+                                    {% if is_granted('BOLAO_EDIT', i.bolao) %}
+                                        <a data-loading="true" href="{{ path('app_bolao_edit', {'id': i.bolao.id}) }}" class="btn btn-sm btn-secondary shadow-sm">
+                                            <i class="bi bi-pencil-square"></i> <span class="d-none d-lg-inline-block">Alterar</span>
+                                        </a>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% else %}
                             <tr>
-                                <td colspan="6" class="text-center">Nenhum registro encontrado</td>
+                                <td colspan="7" class="text-center">Nenhum registro encontrado</td>
                             </tr>
                         </tbody>
                     {% endfor %}
                 </table>
             </div>
         </div>
-        <div class="card-footer">
-
+        <div class="card-footer text-end">
+            Total de registros enconstrados: {{ boloes|length }}
         </div>
     </div>
 {% endblock %}

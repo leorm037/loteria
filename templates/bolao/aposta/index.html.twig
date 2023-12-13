@@ -1,0 +1,68 @@
+{# templates/bolao/apostador/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} :: Bolão :: Aposta{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a data-loading="true" href="{{ path('app_bolao_index') }}" class="text-decoration-none"><i class="fa-solid fa-people-group"></i> Bolão</a></li>
+    <li class="breadcrumb-item active"><i class="bi bi-ticket-perforated"></i> Aposta</li>
+    {% endblock %}
+
+{% block body %}
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div><h1 class="h4 m-0"><i class="bi bi-ticket-perforated"></i> Aposta</h1></div>
+                <div>
+                    <a data-loading="true" href="{{ path('app_bolao_aposta_import', {'id': bolao.id}) }}" class="btn btn-primary btn-sm bg-gradient shadow-sm">
+                        <i class="bi bi-box-arrow-in-down"></i> {{ 'btn.import'|trans({}, 'label') }}
+                    </a>
+                    <a data-loading="true" href="{{ path('app_bolao_aposta_new', {'id': bolao.id}) }}" class="btn btn-primary btn-sm bg-gradient shadow-sm">
+                        <i class="bi bi-plus"></i> {{ 'btn.new'|trans({}, 'label') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {{ include('bolao/_bolao.html.twig') }}
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Dezena</th>
+                            <th>Acerto</th>
+                            <th class="text-center">Conferido</th>
+                            <th class="text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        {% for aposta in apostas %}
+                            <tr>
+                                <td>{{ aposta.dezena|join(', ') }}</td>
+                                <td>{{ aposta.acerto }}</td>
+                                <td class="text-center">{{ (aposta.isConferido) ? 'Sim' : 'Não' }}</td>
+                                <td class="text-center"></td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center">Nenhum registro encontrado</td>
+                            </tr>
+                        </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-gradient text-end">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <a class="btn btn-outline-secondary bg-gradient btn-sm" href="{{ path('app_bolao_index', {'id': bolao.id}) }}">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
+                </div>
+                <div class="my-auto">
+                    Registros: {{ apostas|length }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

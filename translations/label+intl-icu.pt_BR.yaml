@@ -1,1 +1,21 @@
-close: __close
+btn.close: Fechar
+btn.new: Novo
+btn.import: Importar
+form.select.placeholder: Selecione uma opção
+help.bolao.comprovanteAposta: Envie um arquivo no formato PDF, JPG ou PNG
+help.bolao.apostador.comprovante: Envie um arquivo no formato PDF, JPG ou PNG
+help.bolao.aposta.fileCsv: Envie um arquivo de planilha no formato CSV
+label.bolao.comprovanteAposta: Comprovante de aposta
+label.bolao.nome: Nome do bolão
+label.bolao.apostador.nome: Nome
+label.bolao.apostador.email: E-mail
+label.bolao.apostador.celular: Celular
+label.bolao.apostador.isPago: Pago
+label.bolao.apostador.comprovante: Comprovante de pagamento
+label.bolao.apostador.quantidadeCota: Quantidade de cotas
+label.bolao.aposta.fileCsv: Importar apostas em arquivo CSV
+label.bolao.valorCota: Valor da cota
+label.concurso.numero: Número do concurso
+label.loteria.nome: Loteria
+form.select.option.sim: Sim
+form.select.option.nao: Não

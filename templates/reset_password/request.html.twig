@@ -1,0 +1,28 @@
+{# templates/reset_password/request.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} :: Recuperar senha{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active"><i class="bi bi-key"></i> Recuperar senha</li>
+    {% endblock %}
+
+{% block body %}
+    {{ form_start(requestForm, {'attr': {'data-loading': 'true'}}) }}
+    {{ form_errors(requestForm) }}
+    {% for flash_error in app.flashes('reset_password_error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h1 class="h4 m-0"><i class="bi bi-key"></i> Recuperar senha</h1>
+        </div>
+        <div class="card-body">
+            {{ form_row(requestForm.email) }}
+        </div>
+        <div class="card-footer bg-gradient text-end">
+            <button type="submit" class="btn btn-primary bg-gradient btn-sm"><i class="bi bi-key"></i> Recuperar senha</button>
+        </div>
+    </div>
+    {{ form_end(requestForm) }}
+{% endblock %}

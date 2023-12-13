@@ -1,5 +1,14 @@
 <?php
 
+/*
+ *     This file is part of Loteria.
+ *
+ *     (c) Leonardo Rodrigues Marques <leonardo@rodriguesmarques.com.br>
+ *
+ *     This source file is subject to the MIT license that is bundled
+ *     with this source code in the file LICENSE.
+ */
+
 namespace App\Entity;
 
 use App\Repository\ConcursoRepository;
@@ -11,14 +20,15 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: ConcursoRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ORM\Cache]
+#[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
 class Concurso extends AbstractEntity
 {
+
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
-    private ?int $id = null;
+    private ?Uuid $id = null;
 
     #[ORM\Column]
     private ?int $numero = null;
@@ -38,7 +48,7 @@ class Concurso extends AbstractEntity
     #[ORM\Column(length: 2, nullable: true)]
     private ?string $uf = null;
 
-    #[ORM\Column]
+    #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
     protected ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -46,7 +56,11 @@ class Concurso extends AbstractEntity
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[ORM\Cache]
     private ?Loteria $loteria = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?array $dezena = null;
 
     public function getId(): ?Uuid
     {
@@ -157,6 +171,18 @@ class Concurso extends AbstractEntity
     public function setLoteria(?Loteria $loteria): static
     {
         $this->loteria = $loteria;
+
+        return $this;
+    }
+
+    public function getDezena(): ?array
+    {
+        return $this->dezena;
+    }
+
+    public function setDezena(?array $dezena): static
+    {
+        $this->dezena = $dezena;
 
         return $this;
     }

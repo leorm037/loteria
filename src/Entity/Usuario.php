@@ -1,10 +1,17 @@
 <?php
 
+/*
+ *     This file is part of Loteria.
+ *
+ *     (c) Leonardo Rodrigues Marques <leonardo@rodriguesmarques.com.br>
+ *
+ *     This source file is subject to the MIT license that is bundled
+ *     with this source code in the file LICENSE.
+ */
+
 namespace App\Entity;
 
 use App\Repository\UsuarioRepository;
-use DateTimeImmutable;
-use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -14,11 +21,10 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UsuarioRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[ORM\Cache]
+#[ORM\Cache(usage: 'NONSTRICT_READ_WRITE', region: 'usuario_entity_region')]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class Usuario extends AbstractEntity implements UserInterface, PasswordAuthenticatedUserInterface
 {
-
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -47,16 +53,16 @@ class Usuario extends AbstractEntity implements UserInterface, PasswordAuthentic
     private $isVerified = false;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?DateTimeInterface $lastLoginAt = null;
+    private ?\DateTimeInterface $lastLoginAt = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $lastLoginIp = null;
 
-    #[ORM\Column]
-    protected ?DateTimeImmutable $createdAt = null;
+    #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
+    protected ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    protected ?DateTimeInterface $updatedAt = null;
+    protected ?\DateTimeInterface $updatedAt = null;
 
     public function getId(): ?Uuid
     {
@@ -183,12 +189,12 @@ class Usuario extends AbstractEntity implements UserInterface, PasswordAuthentic
         return $this;
     }
 
-    public function getLastLoginAt(): ?DateTimeInterface
+    public function getLastLoginAt(): ?\DateTimeInterface
     {
         return $this->lastLoginAt;
     }
 
-    public function setLastLoginAt(DateTimeInterface $lastLoginAt): static
+    public function setLastLoginAt(\DateTimeInterface $lastLoginAt): static
     {
         $this->lastLoginAt = $lastLoginAt;
 
@@ -207,24 +213,24 @@ class Usuario extends AbstractEntity implements UserInterface, PasswordAuthentic
         return $this;
     }
 
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeImmutable $createdAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?DateTimeInterface
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
 

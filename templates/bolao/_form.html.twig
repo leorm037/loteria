@@ -1,3 +1,37 @@
 {# bolao/_form.html.twig #}
 {{ form_errors(form) }}
-{{ form_row(form.nome) }}
+<div class="row">
+    <div class="col-12 col-md-6">
+        {{ form_row(form.loteria) }}
+    </div>
+    <div class="col-12 col-md-6">
+        {{ form_row(form.concursoNumero) }}
+    </div>
+    <div class="col-12 col-md-6">
+        {{ form_row(form.nome) }}
+    </div>
+    <div class="col-12 col-md-6">
+        {{ form_row(form.valorCota) }}
+    </div>
+    <div class="col-12">
+        <div class="row">
+            <div class="col-12 col-lg-10 col-md-9">
+                {{ form_row(form.comprovanteAposta) }}
+            </div>
+            <div class="col-12 col-lg-2 col-md-3">
+                <div class="mb-3 d-grid">
+                    <label for="comprovante" class="form-label">Comprovante</label>
+                    {% if bolao.comprovante %}
+                        <a href="{{ path('app_bolao_download', {'id': app.request.get('id')}) }}" class="btn btn-secondary shadow-sm">
+                            <i class="bi bi-file-arrow-down"></i> Download
+                        </a>
+                    {% else %}
+                        <a class="btn btn-secondary shadow-sm disabled">
+                            <i class="bi bi-file-arrow-down"></i> Download
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>

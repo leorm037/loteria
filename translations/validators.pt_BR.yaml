@@ -137,3 +137,4 @@ Error: Erro
 'Please select a valid option.': 'Por favor, selecione uma opção válida.'
 'Please select a valid range.': 'Por favor, selecione um intervalo válido.'
 'Please enter a valid week.': 'Por favor, informe uma semana válida.'
+'file.csv': 'Envie um arquivo de planilha no formato CSV'

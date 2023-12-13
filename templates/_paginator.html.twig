@@ -1,0 +1,48 @@
+{# templates/_paginator.html.twig #}
+<div class="row">
+    <div class="col-2 my-auto text-start">
+        {{ paginator.count }} registros
+    </div>
+    <div class="col-8">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center m-0">
+                {% if paginator.pages %}
+                    <li class="page-item{% if paginator.page == 1 %} disabled{% endif %}"><button {% if paginator.page > 1 %}name="page" data-paginator-page="{{ paginator.page - 1 }}"{% endif %} class="page-link">Anterior</button></li>
+
+                    {% set salt = (paginator.page/10)|round(0,'floor') * 10 %}
+
+                    {% if paginator.page is divisible by (10) %}
+                        {% set salt = salt - 10 %}
+                    {% endif %}
+
+                    {% set current = 0 %}
+
+                    {% if paginator.page > 10 %}
+                        <li class="page-item"><button type="button" name="page" data-paginator-page="{{ salt -1 }}" class="page-link">...</button></li>
+                        {% endif %}
+
+                    {% for i in 1..10 %}
+                        {% set current = i + salt %}
+                        {% if current <= paginator.pages %}
+                            <li class="page-item"><button type="button" name="page" data-paginator-page="{{ current }}" class="page-link {% if current == paginator.page %}active{% endif %}">{{ current }}</button></li>
+                            {% endif %}
+                        {% endfor %}
+
+                    {% if current < paginator.count and current <= paginator.pages %}
+                        <li class="page-item"><button type="button" name="page" data-paginator-page="{{ current + 1 }}" class="page-link">...</button></li>
+                        {% endif %}
+
+                    <li class="page-item{% if paginator.page == paginator.pages %} disabled{% endif %}"><button {% if paginator.page < paginator.pages %}name="page" data-paginator-page="{{ paginator.page + 1 }}"{% endif %} class="page-link">Próximo</button></li>
+                    {% endif %}
+            </ul>
+        </nav>
+    </div>
+    <div class="col-2">
+        <select class="form-select" name="maxResult" id="maxResult">
+            <option value="10"{% if 10 == paginator.maxResult %} selected="true"{% endif %}>10</option>
+            <option value="25"{% if 25 == paginator.maxResult %} selected="true"{% endif %}>25</option>
+            <option value="50"{% if 50 == paginator.maxResult %} selected="true"{% endif %}>50</option>
+            <option value="100"{% if 100 == paginator.maxResult %} selected="true"{% endif %}>100</option>
+        </select>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+{# templates/bolao/apostador/_form.html.twig #}
+<div class="card-body border-bottom bg-light">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="bolao_nome_icone">
+                    <i class="fa-solid fa-people-group"></i>
+                </span>
+                <input type="text" class="form-control" id="balao_nome" placeholder="{{ bolao.nome }}" readonly>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="loteria_nome">
+                    <i class="fa-solid fa-clover"></i>
+                </span>
+                <input type="text" class="form-control" id="loteria_nome" placeholder="{{ bolao.concurso.loteria.nome }}" readonly>
+            </div>
+        </div>
+        <div class="col-12 col-md-2">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="concurso_numero">
+                    <i class="bi bi-123"></i>
+                </span>
+                <input type="text" class="form-control" id="concurso_numero" placeholder="{{ bolao.concurso.numero }}" readonly>
+            </div>
+        </div>
+    </div>
+</div>

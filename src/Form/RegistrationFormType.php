@@ -1,5 +1,14 @@
 <?php
 
+/*
+ *     This file is part of Loteria.
+ *
+ *     (c) Leonardo Rodrigues Marques <leonardo@rodriguesmarques.com.br>
+ *
+ *     This source file is subject to the MIT license that is bundled
+ *     with this source code in the file LICENSE.
+ */
+
 namespace App\Form;
 
 use App\Entity\Usuario;
@@ -14,9 +23,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class RegistrationFormType extends AbstractType {
-
-    public function buildForm(FormBuilderInterface $builder, array $options): void {
+class RegistrationFormType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
         $builder
                 ->add('nome', TextType::class, [
                     'label' => 'Nome',
@@ -36,11 +46,11 @@ class RegistrationFormType extends AbstractType {
                     'first_options' => [
                         'label' => 'E-mail',
                         'attr' => [
-                            'autofocus' => true
-                        ]
+                            'autofocus' => true,
+                        ],
                     ],
                     'second_options' => [
-                        'label' => 'Confirme o e-mail'
+                        'label' => 'Confirme o e-mail',
                     ],
                 ])
                 ->add('plainPassword', RepeatedType::class, [
@@ -61,7 +71,7 @@ class RegistrationFormType extends AbstractType {
                                 'minMessage' => 'A senha deve ter no mínimo {{ limit }} caracteres.',
                                 'max' => 4096,
                                     ]),
-                        ]
+                        ],
                     ],
                     'second_options' => [
                         'label' => 'Confirme a senha',
@@ -74,14 +84,15 @@ class RegistrationFormType extends AbstractType {
                                 'minMessage' => 'A senha deve ter no mínimo {{ limit }} caracteres.',
                                 'max' => 4096,
                                     ]),
-                        ]
+                        ],
                     ],
                     'mapped' => false,
                 ])
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver): void {
+    public function configureOptions(OptionsResolver $resolver): void
+    {
         $resolver->setDefaults([
             'data_class' => Usuario::class,
         ]);

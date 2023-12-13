@@ -1,15 +1,15 @@
 {# templates/bolao/index.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ parent() }} :: Bolão :: Noov{% endblock %}
+{% block title %}{{ parent() }} :: Bolão :: Novo{% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{{ path('app_bolao_index') }}" class="text-decoration-none"><i class="fa-solid fa-people-group"></i> Bolão</a></li>
+    <li class="breadcrumb-item"><a data-loading="true" href="{{ path('app_bolao_index') }}" class="text-decoration-none"><i class="fa-solid fa-people-group"></i> Bolão</a></li>
     <li class="breadcrumb-item active"><i class="bi bi-plus"></i> Novo</li>
     {% endblock %}
 
 {% block body %}
-    {{ form_start(form) }}
+    {{ form_start(form, {'attr': {'data-loading': 'true'}}) }}
     <div class="card shadow-sm">
         <div class="card-header">
             <h1 class="h4 m-0"><i class="fa-solid fa-people-group"></i> Novo bolão</h1>
@@ -19,7 +19,7 @@
         </div>
         <div class="card-footer bg-gradient d-flex justify-content-between">
             <div>
-                <a class="btn btn-outline-secondary bg-gradient btn-sm" href="{{ path('app_bolao_index') }}"><i class="bi bi-arrow-left"></i> Voltar</a>
+                <a data-loading="true" class="btn btn-outline-secondary bg-gradient btn-sm" href="{{ path('app_bolao_index') }}"><i class="bi bi-arrow-left"></i> Voltar</a>
             </div>
             <div>
                 <button type="reset" class="btn btn-secondary bg-gradient btn-sm"><i class="fa-solid fa-broom"></i> Limpar</button>

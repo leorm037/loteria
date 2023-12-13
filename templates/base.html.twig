@@ -32,7 +32,7 @@
         <header class="mb-3">
             <nav id="menu" class="navbar navbar-expand-lg bg-loteria">
                 <div class="container-fluid">
-                    <a class="navbar-brand navbar-bg-loteria" href="{{ path('app_index') }}">
+                    <a class="navbar-brand navbar-bg-loteria" href="{{ path('app_home') }}">
                         <i class="fa-solid fa-clover"></i> Loteria
                     </a>
                     <button class="navbar-toggler navbar-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Navigation menu">
@@ -47,8 +47,8 @@
             </nav>
             <nav id="breadcrumb" aria-label="breadcrumb" class="bg-loteria-secondary shadow border-bottom border-loteria" style="--bs-breadcrumb-divider: '>';">
                 <ol class="breadcrumb m-0 p-2">
-                    <li class="breadcrumb-item"><a href="{{ path('app_index') }}" class="text-decoration-none"><i class="bi bi-house"></i> Página inicial</a></li>
-                        {% block breadcrumb %}{% endblock %}
+                    <li class="breadcrumb-item"><a href="{{ path('app_home') }}" class="text-decoration-none"><i class="bi bi-house"></i> Página inicial</a></li>
+                    {% block breadcrumb %}{% endblock %}
                 </ol>
             </nav>
         </header>
@@ -73,6 +73,8 @@
             <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-loading-overlay/2.1.7/loadingoverlay.min.js" integrity="sha512-hktawXAt9BdIaDoaO9DlLp6LYhbHMi5A36LcXQeHgVKUH6kJMOQsAtIw2kmQ9RERDpnSTlafajo6USh9JUXckw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
             <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
             <script type="text/javascript" src="https://kit.fontawesome.com/403477f2af.js" crossorigin="anonymous"></script>
+            <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('js/loading.overlay.setup.js') }}"></script>
         {% endblock %}
     </body>
 </html>

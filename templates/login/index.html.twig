@@ -29,23 +29,28 @@
 
                         <div class="mb-3">
                             <label for="username" class="form-label">E-mail</label>
-                            <input type="text" class="form-control" id="username" name="_username" value="{{ last_username }}" autocomplete="username">
+                            <input type="text" required="required" class="form-control" id="username" name="_username" value="{{ last_username }}" autocomplete="username">
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Senha</label>
-                            <input type="password" class="form-control" id="password" name="_password" autocomplete="current-password">
+                            <input type="password" required="required" class="form-control" id="password" name="_password" autocomplete="current-password">
                         </div>
                         <div class="mb-3">
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="remember_me" name="_remember_me" checked>
+                                <input type="checkbox" class="form-check-input" id="remember_me" name="_remember_me">
                                 <label for="remember_me" class="form-check-label">Ficar conectado</label>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer bg-gradient">
                         <div class="d-flex justify-content-between">
-                            <a class="btn btn-secondary bg-gradient btn-sm shadow-sm" href="{{ path('app_login') }}"><i class="fa-solid fa-broom"></i> Limpar</a>
-                            <button type="submit" class="btn btn-primary bg-gradient btn-sm shadow-sm" data-loading="true"><i class="bi bi-door-open-fill"></i> Entrar</button>
+                            <div>
+                                <a class="btn btn-outline-secondary bg-gradient btn-sm shadow-sm" href="{{ path('app_forgot_password_request') }}"><i class="bi bi-key"></i> Recuperar senha</a>
+                            </div>
+                            <div>
+                                <a class="btn btn-secondary bg-gradient btn-sm shadow-sm" href="{{ path('app_login') }}"><i class="fa-solid fa-broom"></i> Limpar</a>
+                                <button type="submit" class="btn btn-primary bg-gradient btn-sm shadow-sm" data-loading="true"><i class="bi bi-door-open-fill"></i> Entrar</button>
+                            </div>
                         </div>
                     </div>
                 </div>

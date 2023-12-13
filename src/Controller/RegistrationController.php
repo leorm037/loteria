@@ -1,5 +1,14 @@
 <?php
 
+/*
+ *     This file is part of Loteria.
+ *
+ *     (c) Leonardo Rodrigues Marques <leonardo@rodriguesmarques.com.br>
+ *
+ *     This source file is subject to the MIT license that is bundled
+ *     with this source code in the file LICENSE.
+ */
+
 namespace App\Controller;
 
 use App\Entity\Usuario;
@@ -47,14 +56,14 @@ class RegistrationController extends AbstractController
             // generate a signed url and email it to the user
             $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
                 (new TemplatedEmail())
-                    ->from(new Address('bolao@paginaemconstrucao.net.br', 'Bolão da família'))
+//                    ->from(new Address('bolao@paginaemconstrucao.net.br', 'Bolão da família'))
                     ->to($user->getEmail())
                     ->subject('Por favor, confirme o seu e-mail.')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
             // do anything else you need here, like send an email
 
-            return $this->redirectToRoute('app_index');
+            return $this->redirectToRoute('app_home');
         }
 
         return $this->render('registration/register.html.twig', [

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ *     This file is part of Loteria.
+ *
+ *     (c) Leonardo Rodrigues Marques <leonardo@rodriguesmarques.com.br>
+ *
+ *     This source file is subject to the MIT license that is bundled
+ *     with this source code in the file LICENSE.
+ */
+
 namespace App\Test\Controller;
 
 use App\Entity\Loteria;
@@ -38,7 +47,7 @@ class LoteriaControllerTest extends WebTestCase
 
     public function testNew(): void
     {
-        $originalNumObjectsInRepository = count($this->repository->findAll());
+        $originalNumObjectsInRepository = \count($this->repository->findAll());
 
         $this->markTestIncomplete();
         $this->client->request('GET', sprintf('%snew', $this->path));
@@ -59,7 +68,7 @@ class LoteriaControllerTest extends WebTestCase
 
         self::assertResponseRedirects('/loteria/');
 
-        self::assertSame($originalNumObjectsInRepository + 1, count($this->repository->findAll()));
+        self::assertSame($originalNumObjectsInRepository + 1, \count($this->repository->findAll()));
     }
 
     public function testShow(): void
@@ -137,7 +146,7 @@ class LoteriaControllerTest extends WebTestCase
     {
         $this->markTestIncomplete();
 
-        $originalNumObjectsInRepository = count($this->repository->findAll());
+        $originalNumObjectsInRepository = \count($this->repository->findAll());
 
         $fixture = new Loteria();
         $fixture->setApi('My Title');
@@ -153,12 +162,12 @@ class LoteriaControllerTest extends WebTestCase
         $this->manager->persist($fixture);
         $this->manager->flush();
 
-        self::assertSame($originalNumObjectsInRepository + 1, count($this->repository->findAll()));
+        self::assertSame($originalNumObjectsInRepository + 1, \count($this->repository->findAll()));
 
         $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
         $this->client->submitForm('Delete');
 
-        self::assertSame($originalNumObjectsInRepository, count($this->repository->findAll()));
+        self::assertSame($originalNumObjectsInRepository, \count($this->repository->findAll()));
         self::assertResponseRedirects('/loteria/');
     }
 }
