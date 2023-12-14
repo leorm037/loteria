@@ -5,14 +5,14 @@
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a data-loading="true" href="{{ path('app_bolao_index') }}" class="text-decoration-none"><i class="fa-solid fa-people-group"></i> Bolão</a></li>
-    <li class="breadcrumb-item active"><i class="bi bi-people"></i> Apostador</li>
+    <li class="breadcrumb-item active"><i class="bi bi-people-fill"></i> Apostador</li>
     {% endblock %}
 
 {% block body %}
     <div class="card shadow-sm">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
-                <div><h1 class="h4 m-0"><i class="bi bi-people"></i></i> Apostadores</h1></div>
+                <div><h1 class="h4 m-0"><i class="bi bi-people-fill"></i> Apostadores</h1></div>
                 <div>
                     <a data-loading="true" href="{{ path('app_bolao_apostador_new', {'id': bolao.id}) }}" class="btn btn-primary btn-sm bg-gradient shadow-sm">
                         <i class="bi bi-plus"></i> {{ 'btn.new'|trans({}, 'label') }}
@@ -70,7 +70,7 @@
                     </a>
                 </div>
                 <div>
-                    Total de registros enconstrados: {{ apostadores|length }}
+                    {{ apostadores|length }} registros
                 </div>
             </div>
         </div>

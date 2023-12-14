@@ -21,6 +21,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Uid\Uuid;
@@ -190,7 +191,11 @@ class BolaoApostadorController extends AbstractController
             $fileNameDownload
         );
 
+        $mimeTypes = new MimeTypes();
+        $mimeType = $mimeTypes->guessMimeType($apostador->getComprovante());
+
         $response->headers->set('Content-Disposition', $disposition);
+        $response->headers->set('Content-type', $mimeType);
 
         return $response;
     }

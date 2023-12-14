@@ -68,6 +68,20 @@ class BolaoRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findByUuid(Uuid $uuid): ?Bolao
+    {
+        return $this->createQueryBuilder('b')
+                        ->select('b,c,l')
+                        ->andWhere('b.id = :id')
+                        ->setParameter('id', $uuid->toBinary())
+                        ->innerJoin('b.concurso', 'c', Join::WITH, 'b.concurso = c.id')
+                        ->innerJoin('c.loteria', 'l', Join::WITH, 'c.loteria = l.id')
+                        ->orderBy('b.nome', 'ASC')
+                        ->getQuery()
+                        ->getOneOrNullResult()
+        ;
+    }
+
     public function save(Bolao $bolao, bool $flush = false): void
     {
         $this->getEntityManager()->persist($bolao);

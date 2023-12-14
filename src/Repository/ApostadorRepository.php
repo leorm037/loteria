@@ -52,6 +52,18 @@ class ApostadorRepository extends ServiceEntityRepository
         ;
     }
 
+    public function listEmail(Bolao $bolao)
+    {
+        return $this->createQueryBuilder('a')
+                        ->where('a.bolao = :bolao')
+                        ->setParameter('bolao', $bolao->getId()->toBinary())
+                        ->andWhere('a.email IS NOT NULL')
+                        ->orderBy('a.nome', 'ASC')
+                        ->getQuery()
+                        ->getResult()
+        ;
+    }
+
     public function findById(Uuid $id): Apostador
     {
         return $this->createQueryBuilder('a')

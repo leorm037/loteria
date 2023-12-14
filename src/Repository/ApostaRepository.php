@@ -13,7 +13,9 @@ namespace App\Repository;
 
 use App\Entity\Aposta;
 use App\Entity\Bolao;
+use App\Entity\Concurso;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -45,7 +47,7 @@ class ApostaRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('a')
                         ->where('a.bolao = :bolao')
                         ->setParameter('bolao', $bolao->getId()->toBinary())
-                        ->orderBy('a.dezena', 'ASC')
+                        ->orderBy('CAST(a.dezena AS CHAR)', 'ASC')
                         ->getQuery()
                         ->getResult()
         ;
@@ -60,6 +62,34 @@ class ApostaRepository extends ServiceEntityRepository
                         ->setParameter('dezena', json_encode($aposta->getDezena()))
                         ->getQuery()
                         ->getOneOrNullResult()
+        ;
+    }
+
+    public function listPesquisar(
+        Bolao $bolao,
+        int $firstResult = 1,
+        int $maxResult = 10
+    ): Paginator {
+        $query = $this->createQueryBuilder('a')
+                ->where('a.bolao = :bolao')
+                ->setParameter('bolao', $bolao->getId()->toBinary())
+                ->orderBy('CAST(a.dezena AS CHAR)', 'ASC')
+                ->setMaxResults($maxResult)
+                ->setFirstResult($firstResult)
+                ->getQuery()
+        ;
+
+        return new Paginator($query);
+    }
+
+    public function findNaoApurado(Concurso $concurso)
+    {
+        return $this->createQueryBuilder('a')
+                        ->where('a.concurso = :concurso')
+                        ->setParameter('concurso', $concurso->getId()->toBinary())
+                        ->andWhere('a.isConferido = false')
+                        ->getQuery()
+                        ->getResult()
         ;
     }
 

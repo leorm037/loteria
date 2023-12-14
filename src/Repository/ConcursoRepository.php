@@ -55,7 +55,7 @@ class ConcursoRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-    
+
     public function listPesquisar(
         Loteria $loteria = null,
         int $firstResult = 1,
@@ -85,6 +85,19 @@ class ConcursoRepository extends ServiceEntityRepository
         ;
 
         return new Paginator($query);
+    }
+
+    public function findLast(Loteria $loteria): ?Concurso
+    {
+        return $this->createQueryBuilder('c')
+                        ->where('c.loteria = :loteria')
+                        ->setParameter('loteria', $loteria->getId()->toBinary())
+                        ->andWhere('c.dezena IS NOT NULL')
+                        ->orderBy('c.numero', 'DESC')
+                        ->setMaxResults(1)
+                        ->getQuery()
+                        ->getOneOrNullResult()
+        ;
     }
 
     //    /**

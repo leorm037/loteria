@@ -12,6 +12,7 @@
 namespace App\Controller;
 
 use App\DTO\BolaoApostaImportDTO;
+use App\DTO\PaginatorDTO;
 use App\Entity\Aposta;
 use App\Form\BolaoApostaImportFormType;
 use App\Helper\CsvReaderHelper;
@@ -54,10 +55,25 @@ class BolaoApostaController extends AbstractController
 
         $bolao = $this->bolaoRepository->findById($uuid, $usuario);
 
-        $apostas = $this->apostaRepository->findByBolao($bolao);
+        $page = $request->get('page', 1);
+        $maxResult = $request->get('maxResult', 10);
+
+        $paginator = new PaginatorDTO();
+        $paginator
+                ->setPage($page)
+                ->setMaxResult($maxResult)
+        ;
+
+        $apostas = $this->apostaRepository->listPesquisar(
+            $bolao,
+            $paginator->getFirstResult(),
+            $paginator->getMaxResult()
+        );
+
+        $paginator->setResult($apostas);
 
         return $this->render('bolao/aposta/index.html.twig', [
-                    'apostas' => $apostas,
+                    'paginator' => $paginator,
                     'bolao' => $bolao,
         ]);
     }

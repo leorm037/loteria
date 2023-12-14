@@ -36,10 +36,10 @@
                         </tr>
                     </thead>
                     <tbody class="table-group-divider">
-                        {% for aposta in apostas %}
+                        {% for aposta in paginator.result %}
                             <tr>
                                 <td>{{ aposta.dezena|join(', ') }}</td>
-                                <td>{{ aposta.acerto }}</td>
+                                <td class="text-end">{{ aposta.acerto|default('-') }}</td>
                                 <td class="text-center">{{ (aposta.isConferido) ? 'Sim' : 'Não' }}</td>
                                 <td class="text-center"></td>
                             </tr>
@@ -53,16 +53,12 @@
             </div>
         </div>
         <div class="card-footer bg-gradient text-end">
-            <div class="d-flex justify-content-between">
-                <div>
-                    <a class="btn btn-outline-secondary bg-gradient btn-sm" href="{{ path('app_bolao_index', {'id': bolao.id}) }}">
-                        <i class="bi bi-arrow-left"></i> Voltar
-                    </a>
-                </div>
-                <div class="my-auto">
-                    Registros: {{ apostas|length }}
-                </div>
-            </div>
+            {% include '_paginator.html.twig' %}
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts_footer %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/_paginator.js') }}"></script>
 {% endblock %}

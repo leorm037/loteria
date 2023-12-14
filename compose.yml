@@ -6,7 +6,7 @@ services:
         ports:
             - 8025:8025
             - 1025:1025
-            
+
     mysqldb:
         container_name: loteria-mysqldb
         image: mysql:5.7.32
@@ -52,6 +52,7 @@ services:
             - 9000:9000
         links:
             - mysqldb
+            - mailhog
         depends_on:
             - mysqldb
             - nginx

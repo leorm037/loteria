@@ -56,7 +56,7 @@ class Aposta extends AbstractEntity
     protected ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $updatedAt = null;
+    protected ?\DateTimeInterface $updatedAt = null;
 
     public function getId(): ?Uuid
     {

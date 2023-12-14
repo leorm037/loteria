@@ -12,8 +12,6 @@
 namespace App\Entity;
 
 use App\Repository\ConcursoRepository;
-use DateTimeImmutable;
-use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
@@ -23,7 +21,6 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
 class Concurso extends AbstractEntity
 {
-
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -34,7 +31,7 @@ class Concurso extends AbstractEntity
     private ?int $numero = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?DateTimeInterface $apuracaoData = null;
+    private ?\DateTimeInterface $apuracaoData = null;
 
     #[ORM\Column(nullable: true)]
     private ?array $rateioPremio = null;
@@ -49,10 +46,10 @@ class Concurso extends AbstractEntity
     private ?string $uf = null;
 
     #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
-    protected ?DateTimeImmutable $createdAt = null;
+    protected ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    protected ?DateTimeInterface $updatedAt = null;
+    protected ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -79,12 +76,12 @@ class Concurso extends AbstractEntity
         return $this;
     }
 
-    public function getApuracaoData(): ?DateTimeInterface
+    public function getApuracaoData(): ?\DateTimeInterface
     {
         return $this->apuracaoData;
     }
 
-    public function setApuracaoData(?DateTimeInterface $apuracaoData): static
+    public function setApuracaoData(?\DateTimeInterface $apuracaoData): static
     {
         $this->apuracaoData = $apuracaoData;
 
@@ -139,24 +136,24 @@ class Concurso extends AbstractEntity
         return $this;
     }
 
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTimeImmutable $createdAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?DateTimeInterface
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
 

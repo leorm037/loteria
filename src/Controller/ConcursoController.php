@@ -37,6 +37,8 @@ class ConcursoController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
         $loterias = $this->loteriaRepository->list();
 
         $paginator = new PaginatorDTO();

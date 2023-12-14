@@ -15,6 +15,7 @@ use App\Entity\Loteria;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Cache;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<Loteria>
@@ -26,7 +27,6 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class LoteriaRepository extends ServiceEntityRepository
 {
-
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Loteria::class);
@@ -49,6 +49,17 @@ class LoteriaRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('l')
                         ->where('l.slug = :slug')
                         ->setParameter('slug', $loteriaSlug)
+                        ->getQuery()
+                        ->getOneOrNullResult()
+        ;
+    }
+
+    public function findById(Uuid $id): ?Loteria
+    {
+        return $this->createQueryBuilder('l')
+                        ->andWhere('l.id = :id')
+                        ->setParameter('id', $id->toBinary())
+                        ->setCacheable(true)
                         ->getQuery()
                         ->getOneOrNullResult()
         ;

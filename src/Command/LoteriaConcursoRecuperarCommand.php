@@ -17,7 +17,6 @@ use App\Factory\ConcursoFactory;
 use App\Repository\ConcursoRepository;
 use App\Repository\LoteriaRepository;
 use App\Service\ConcursoSorteioService;
-use DateInterval;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -29,23 +28,21 @@ use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
 #[AsCommand(
-            name: 'loteria:concurso:recuperar',
-            description: 'Recupera os dados do sorteio dos concursos',
-    )]
+    name: 'loteria:concurso:recuperar',
+    description: 'Recupera os dados do sorteio dos concursos',
+)]
 class LoteriaConcursoRecuperarCommand extends Command
 {
-
     private $messages;
     private CacheInterface $cache;
     private LoteriaRepository $loteriaRepository;
     private ConcursoRepository $concursoRepository;
 
     public function __construct(
-            CacheInterface $cache,
-            LoteriaRepository $loteriaRepository,
-            ConcursoRepository $concursoRepository
-    )
-    {
+        CacheInterface $cache,
+        LoteriaRepository $loteriaRepository,
+        ConcursoRepository $concursoRepository
+    ) {
         $this->cache = $cache;
         $this->loteriaRepository = $loteriaRepository;
         $this->concursoRepository = $concursoRepository;
@@ -57,15 +54,15 @@ class LoteriaConcursoRecuperarCommand extends Command
     {
         $this
                 ->addArgument(
-                        'loteria',
-                        InputArgument::OPTIONAL,
-                        'Recupera o resultado da loteria informada'
+                    'loteria',
+                    InputArgument::OPTIONAL,
+                    'Recupera o resultado da loteria informada'
                 )
                 ->addOption(
-                        'concurso',
-                        'c',
-                        InputOption::VALUE_REQUIRED,
-                        'Número do concurso que deve ser recuperado'
+                    'concurso',
+                    'c',
+                    InputOption::VALUE_REQUIRED,
+                    'Número do concurso que deve ser recuperado'
                 )
         ;
     }
@@ -94,6 +91,7 @@ class LoteriaConcursoRecuperarCommand extends Command
 
         if (null === $loterias) {
             $this->messages[] = ['status' => 'info', 'message' => 'Nenhuma loteria encontrada.'];
+
             return;
         }
 
@@ -102,35 +100,36 @@ class LoteriaConcursoRecuperarCommand extends Command
         }
     }
 
-    private function recuperarUltimoConcursoLoteria(string $loteriaSlug, ?int $concursoNumero = null): void
+    private function recuperarUltimoConcursoLoteria(string $loteriaSlug, int $concursoNumero = null): void
     {
         $loteria = $this->loteriaRepository->findBySlug($loteriaSlug);
 
         if (null === $loteria) {
             $this->messages[] = [
                 'status' => 'info',
-                'message' => sprintf('Nenhuma loteria "%s" encontrada.', $loteriaSlug)
+                'message' => sprintf('Nenhuma loteria "%s" encontrada.', $loteriaSlug),
             ];
+
             return;
         }
 
         $this->gravarSorteio($loteria, $concursoNumero);
     }
 
-    private function gravarSorteio(Loteria $loteria, ?int $numero = null): void
+    private function gravarSorteio(Loteria $loteria, int $numero = null): void
     {
-        $key = 'json_' . $loteria->getId() . '_' . $numero;
+        $key = 'json_'.$loteria->getId().'_'.$numero;
 
         /** @var Concurso $sorteio */
         $sorteio = $this->cache->get($key, function (ItemInterface $item) use ($loteria, $numero) {
-            $item->expiresAfter(new DateInterval('P1D'));
+            $item->expiresAfter(new \DateInterval('P1D'));
 
             return ConcursoSorteioService::getConcurso($loteria, $numero);
         });
 
         $concurso = $this->concursoRepository->findByLoteriaAndNumero(
-                $loteria,
-                $sorteio->getNumero()
+            $loteria,
+            $sorteio->getNumero()
         );
 
         if (null === $concurso) {
@@ -138,7 +137,7 @@ class LoteriaConcursoRecuperarCommand extends Command
 
             $this->messages[] = [
                 'status' => 'success',
-                'message' => sprintf('O concurso %s da %s foi salvo.', $sorteio->getNumero(), $sorteio->getLoteria()->getNome())
+                'message' => sprintf('O concurso %s da %s foi salvo.', $sorteio->getNumero(), $sorteio->getLoteria()->getNome()),
             ];
         } elseif (null === $concurso->getDezena() || null === $concurso->getRateioPremio()) {
             ConcursoFactory::updateFromJson($concurso, $sorteio);
@@ -146,12 +145,12 @@ class LoteriaConcursoRecuperarCommand extends Command
 
             $this->messages[] = [
                 'status' => 'success',
-                'message' => sprintf('O concurso %s da %s foi atualizado.', $concurso->getNumero(), $concurso->getLoteria()->getNome())
+                'message' => sprintf('O concurso %s da %s foi atualizado.', $concurso->getNumero(), $concurso->getLoteria()->getNome()),
             ];
         } else {
             $this->messages[] = [
                 'status' => 'info',
-                'message' => sprintf('O concurso %s da %s já estava salvo.', $concurso->getNumero(), $concurso->getLoteria()->getNome())
+                'message' => sprintf('O concurso %s da %s já estava salvo.', $concurso->getNumero(), $concurso->getLoteria()->getNome()),
             ];
         }
     }
@@ -161,7 +160,7 @@ class LoteriaConcursoRecuperarCommand extends Command
         foreach ($this->messages as $message) {
             switch ($message['status']) {
                 case 'success':
-                    $io->success(($message['message']));
+                    $io->success($message['message']);
                     break;
                 case 'danger':
                     $io->error($message['message']);

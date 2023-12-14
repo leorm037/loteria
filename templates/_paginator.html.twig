@@ -1,7 +1,12 @@
 {# templates/_paginator.html.twig #}
 <div class="row">
-    <div class="col-2 my-auto text-start">
-        {{ paginator.count }} registros
+    <div class="col-2">
+        <select class="form-select" name="maxResult" id="maxResult">
+            <option value="10"{% if 10 == paginator.maxResult %} selected="true"{% endif %}>10</option>
+            <option value="25"{% if 25 == paginator.maxResult %} selected="true"{% endif %}>25</option>
+            <option value="50"{% if 50 == paginator.maxResult %} selected="true"{% endif %}>50</option>
+            <option value="100"{% if 100 == paginator.maxResult %} selected="true"{% endif %}>100</option>
+        </select>
     </div>
     <div class="col-8">
         <nav aria-label="Page navigation">
@@ -37,12 +42,7 @@
             </ul>
         </nav>
     </div>
-    <div class="col-2">
-        <select class="form-select" name="maxResult" id="maxResult">
-            <option value="10"{% if 10 == paginator.maxResult %} selected="true"{% endif %}>10</option>
-            <option value="25"{% if 25 == paginator.maxResult %} selected="true"{% endif %}>25</option>
-            <option value="50"{% if 50 == paginator.maxResult %} selected="true"{% endif %}>50</option>
-            <option value="100"{% if 100 == paginator.maxResult %} selected="true"{% endif %}>100</option>
-        </select>
+    <div class="col-2 my-auto text-end">
+        {{ paginator.count|number_format(0, ',', '.') }} registros
     </div>
 </div>
