@@ -15,6 +15,7 @@ use App\Entity\Aposta;
 use App\Entity\Bolao;
 use App\Entity\Concurso;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -28,6 +29,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ApostaRepository extends ServiceEntityRepository
 {
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Aposta::class);
@@ -66,10 +68,11 @@ class ApostaRepository extends ServiceEntityRepository
     }
 
     public function listPesquisar(
-        Bolao $bolao,
-        int $firstResult = 1,
-        int $maxResult = 10
-    ): Paginator {
+            Bolao $bolao,
+            int $firstResult = 1,
+            int $maxResult = 10
+    ): Paginator
+    {
         $query = $this->createQueryBuilder('a')
                 ->where('a.bolao = :bolao')
                 ->setParameter('bolao', $bolao->getId()->toBinary())
@@ -88,6 +91,20 @@ class ApostaRepository extends ServiceEntityRepository
                         ->where('a.concurso = :concurso')
                         ->setParameter('concurso', $concurso->getId()->toBinary())
                         ->andWhere('a.isConferido = false')
+                        ->getQuery()
+                        ->getResult()
+        ;
+    }
+
+    public function findNaoConferidoConcursoSorteado()
+    {
+        return $this->createQueryBuilder('a')
+                        ->select('a,c,b')
+                        ->where('a.isConferido = false')
+                        ->andWhere('c.dezena IS NOT NULL')
+                        ->innerJoin('a.concurso', 'c', Join::WITH, 'a.concurso = c.id')
+                        ->innerJoin('c.loteria', 'l', Join::WITH, 'c.loteria = l.id')
+                        ->leftJoin('a.bolao', 'b', Join::WITH, 'a.bolao = b.id')
                         ->getQuery()
                         ->getResult()
         ;

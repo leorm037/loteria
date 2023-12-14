@@ -25,6 +25,7 @@ use Twig\Environment;
 
 final class BolaoConferidoMessageHandler implements MessageHandlerInterface
 {
+
     private ApostadorRepository $apostadorRepository;
     private BolaoRepository $bolaoRepository;
     private ApostaRepository $apostaRepository;
@@ -33,13 +34,14 @@ final class BolaoConferidoMessageHandler implements MessageHandlerInterface
     private LoggerInterface $logger;
 
     public function __construct(
-        ApostadorRepository $apostadorRepository,
-        BolaoRepository $bolaoRepository,
-        ApostaRepository $apostaRepository,
-        MailerInterface $mailer,
-        Environment $twig,
-        LoggerInterface $logger
-    ) {
+            ApostadorRepository $apostadorRepository,
+            BolaoRepository $bolaoRepository,
+            ApostaRepository $apostaRepository,
+            MailerInterface $mailer,
+            Environment $twig,
+            LoggerInterface $logger
+    )
+    {
         $this->apostadorRepository = $apostadorRepository;
         $this->bolaoRepository = $bolaoRepository;
         $this->apostaRepository = $apostaRepository;
@@ -55,13 +57,41 @@ final class BolaoConferidoMessageHandler implements MessageHandlerInterface
 
         $resultados = [];
 
+        $apostadores = $this->apostadorRepository->listEmail($bolaoDb);
+        /** @var Apostador $apostador */
+        $addresses = array_map(fn($apostador): string => $apostador->getEmail(), $apostadores);
+
+        $bodyHtml = $this->twig->render('bolao/aposta/conferencia_email.html.twig', [
+            'bolao' => $bolaoDb,
+            'resultados' => $this->formatHtml($apostas),
+        ]);
+
+        $bodyText = $this->twig->render('bolao/aposta/conferencia_email.text.twig', [
+            'bolao' => $bolaoDb,
+            'resultados' => $this->formatText($apostas),
+        ]);
+
+        $email = (new Email())
+                ->to(...$addresses)
+                ->subject($bolaoDb->getNome())
+                ->html($bodyHtml)
+                ->text($bodyText)
+        ;
+
+        $this->mailer->send($email);
+    }
+
+    private function formatHtml($apostas)
+    {
+        $resultados = [];
+
         /** @var Aposta $aposta */
         foreach ($apostas as $aposta) {
             $dezenas = [];
 
             foreach ($aposta->getDezena() as $dezena) {
                 if (\in_array($dezena, $aposta->getConcurso()->getDezena())) {
-                    $dezenas[] = '<span class="sucesso">'.$dezena.'</span>';
+                    $dezenas[] = '<span class="sucesso">' . $dezena . '</span>';
                 } else {
                     $dezenas[] = $dezena;
                 }
@@ -73,21 +103,31 @@ final class BolaoConferidoMessageHandler implements MessageHandlerInterface
             ];
         }
 
-        $apostadores = $this->apostadorRepository->listEmail($bolaoDb);
-        /** @var Apostador $apostador */
-        $addresses = array_map(fn ($apostador): string => $apostador->getEmail(), $apostadores);
+        return $resultados;
+    }
 
-        $body = $this->twig->render('bolao/aposta/conferencia_email.html.twig', [
-            'bolao' => $bolaoDb,
-            'resultados' => $resultados,
-        ]);
+    private function formatText($apostas)
+    {
+        $resultados = [];
 
-        $email = (new Email())
-                ->to(...$addresses)
-                ->subject($bolaoDb->getNome())
-                ->html($body)
-        ;
+        /** @var Aposta $aposta */
+        foreach ($apostas as $aposta) {
+            $dezenas = [];
 
-        $this->mailer->send($email);
+            foreach ($aposta->getDezena() as $dezena) {
+                if (\in_array($dezena, $aposta->getConcurso()->getDezena())) {
+                    $dezenas[] = '(' . $dezena . ')';
+                } else {
+                    $dezenas[] = $dezena;
+                }
+            }
+
+            $resultados[] = [
+                'dezena' => $dezenas,
+                'acerto' => $aposta->getAcerto(),
+            ];
+        }
+
+        return $resultados;
     }
 }

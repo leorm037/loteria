@@ -1,0 +1,14 @@
+{# templates/registration/confirmation_email.text.twig #}
+_{{ bolao.nome }}_
+_{{ bolao.concurso.loteria.nome }}_
+_{{ bolao.concurso.numero }} - {{ bolao.concurso.dezena|join(', ') }}_
+================================================================================
+{{ ' ' }}
+{{ ' ' }}
+{% for resultado in resultados %}
+Acertos: {{ resultado.acerto }} => {{ resultado.dezena|join(', ') }}
+{% endfor %}
+{{ ' ' }}
+{{ ' ' }}
+================================================================================
+{{ url('app_home') }}

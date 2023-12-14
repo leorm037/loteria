@@ -12,11 +12,8 @@
 namespace App\Command;
 
 use App\Entity\Aposta;
-use App\Entity\Loteria;
 use App\Message\BolaoConferidoMessage;
 use App\Repository\ApostaRepository;
-use App\Repository\ConcursoRepository;
-use App\Repository\LoteriaRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,25 +22,21 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsCommand(
-    name: 'loteria:aposta:conferir',
-    description: 'Conferir as apostas',
-)]
+            name: 'loteria:aposta:conferir',
+            description: 'Conferir as apostas',
+    )]
 class LoteriaApostaConferirCommand extends Command
 {
+
     private MessageBusInterface $bus;
-    private ConcursoRepository $concursoRepository;
-    private LoteriaRepository $loteriaRepository;
     private ApostaRepository $apostaRepository;
     private $messages = [];
 
     public function __construct(
-        ConcursoRepository $concursoRepository,
-        LoteriaRepository $loteriaRepository,
-        ApostaRepository $apostaRepository,
-        MessageBusInterface $bus
-    ) {
-        $this->concursoRepository = $concursoRepository;
-        $this->loteriaRepository = $loteriaRepository;
+            ApostaRepository $apostaRepository,
+            MessageBusInterface $bus
+    )
+    {
         $this->apostaRepository = $apostaRepository;
         $this->bus = $bus;
 
@@ -52,68 +45,47 @@ class LoteriaApostaConferirCommand extends Command
 
     protected function configure(): void
     {
-        //        $this
-        //                ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-        //                ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
-        //        ;
+        
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
-        $loterias = $this->loteriaRepository->list();
+        $bolaoApostaConferida = [];
 
-        /** @var Loteria $loteria */
-        foreach ($loterias as $loteria) {
+        $apostas = $this->apostaRepository->findNaoConferidoConcursoSorteado();
+
+        /** @var Aposta $aposta */
+        foreach ($apostas as $aposta) {
+            $dezenasAcertadas = array_intersect($aposta->getDezena(), $aposta->getConcurso()->getDezena());
+            $isPremiado = \in_array(\count($dezenasAcertadas), $aposta->getConcurso()->getLoteria()->getPremiar(), true);
+
+            $aposta
+                    ->setAcerto(\count($dezenasAcertadas))
+                    ->setPremiado($isPremiado)
+                    ->setIsConferido(true)
+            ;
+
+            $this->apostaRepository->save($aposta, true);
+
             $this->messages[] = [
-                'status' => 'title',
-                'message' => sprintf('Loteria %s', $loteria->getNome()),
+                'status' => 'text',
+                'message' => sprintf(
+                        'Loteria %s, concurso %s, aposta %s.',
+                        $aposta->getConcurso()->getLoteria()->getNome(),
+                        $aposta->getConcurso()->getNumero(),
+                        implode("-", $aposta->getDezena())
+                )
             ];
 
-            $concurso = $this->concursoRepository->findLast($loteria);
-
-            $this->messages[] = [
-                'status' => 'info',
-                'message' => sprintf('Concurso %s', $concurso->getNumero()),
-            ];
-
-            /** @var Aposta $aposta */
-            $apostas = $this->apostaRepository->findNaoApurado($concurso);
-
-            $bolaoConferido = [];
-
-            foreach ($apostas as $aposta) {
-                if (null !== $aposta->getBolao()) {
-                    $bolaoConferido[] = $aposta->getBolao();
-                }
-
-                $acertoArray = array_intersect($aposta->getDezena(), $concurso->getDezena());
-                $isPremiado = \in_array(\count($acertoArray), $loteria->getPremiar(), true);
-
-                $aposta
-                        ->setAcerto(\count($acertoArray))
-                        ->setPremiado($isPremiado)
-                        ->setIsConferido(true)
-                ;
-
-                $this->apostaRepository->save($aposta, true);
-
-                $this->messages[] = [
-                    'status' => 'text',
-                    'message' => sprintf(
-                        'Dezenas apostadas "%s" com %s acerto(s).',
-                        implode(', ', $aposta->getDezena()),
-                        $aposta->getAcerto()
-                    ),
-                ];
+            if (null !== $aposta->getBolao()) {
+                $bolaoApostaConferida[$aposta->getBolao()->getId()->toBase32()] = $aposta->getBolao();
             }
+        }
 
-            $bolaoConferido = array_unique($bolaoConferido, \SORT_REGULAR);
-
-            foreach ($bolaoConferido as $bolao) {
-                $this->bus->dispatch(new BolaoConferidoMessage($bolao));
-            }
+        foreach ($bolaoApostaConferida as $bolao) {
+            $this->bus->dispatch(new BolaoConferidoMessage($bolao));
         }
 
         $this->exibirMensagens($io);
