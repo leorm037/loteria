@@ -76,7 +76,7 @@ class BolaoApostadorVoter extends Voter
     {
         return $user === $bolao->getUsuario();
     }
-    
+
     private function canDelete(Usuario $user, Bolao $bolao): bool
     {
         return $user === $bolao->getUsuario();

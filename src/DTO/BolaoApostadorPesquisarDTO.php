@@ -13,9 +13,8 @@ namespace App\DTO;
 
 class BolaoApostadorPesquisarDTO
 {
-
-    const PAGO_YES = 'yes';
-    const PAGO_NO = 'no';
+    public const PAGO_YES = 'yes';
+    public const PAGO_NO = 'no';
 
     private ?string $nome = null;
     private ?string $pago = null;

@@ -19,7 +19,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class BolaoVoter extends Voter
 {
-
     public const EDIT = 'BOLAO_EDIT';
     public const DOWNLOAD = 'BOLAO_DOWNLOAD';
     public const DELETE = 'BOLAO_DELETE';

@@ -30,7 +30,6 @@ use Symfony\Component\Uid\Uuid;
  */
 class ApostadorRepository extends ServiceEntityRepository
 {
-
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Apostador::class);
@@ -79,14 +78,13 @@ class ApostadorRepository extends ServiceEntityRepository
     }
 
     public function listPesquisar(
-            Bolao $bolao,
-            Usuario $usuario,
-            ?string $nome = null,
-            ?bool $pago = null,
-            int $firstResult = 1,
-            int $maxResult = 10
-    ): Paginator
-    {
+        Bolao $bolao,
+        Usuario $usuario,
+        string $nome = null,
+        bool $pago = null,
+        int $firstResult = 1,
+        int $maxResult = 10
+    ): Paginator {
         if (!\in_array($maxResult, [10, 25, 50, 100], true)) {
             $maxResult = 10;
         }
@@ -101,7 +99,7 @@ class ApostadorRepository extends ServiceEntityRepository
 
         if ($nome) {
             $query = $query->andWhere('a.nome LIKE :nome')
-                    ->setParameter('nome', '%' . $nome . '%')
+                    ->setParameter('nome', '%'.$nome.'%')
             ;
         }
 

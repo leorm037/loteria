@@ -8,7 +8,7 @@ composer update
 composer code:fix
 composer install --no-dev --optimize-autoloader
 composer dump-env prod
-php bin/console cache:clear --env=DEV
-php bin/console cache:clear --env=TEST
-php bin/console cache:clear --env=PROD
+php bin/console cache:clear --env=dev
+php bin/console cache:clear --env=test
+php bin/console cache:clear --env=prod
 php bin/console cache:warmup

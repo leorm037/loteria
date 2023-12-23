@@ -19,16 +19,11 @@ use App\Repository\ApostaRepository;
 use App\Repository\BolaoRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
-use Symfony\Component\Mime\MimeTypes;
-use Symfony\Component\Mime\Part\DataPart;
-
 
 final class BolaoConferidoMessageHandler implements MessageHandlerInterface
 {
-
     private ApostadorRepository $apostadorRepository;
     private BolaoRepository $bolaoRepository;
     private ApostaRepository $apostaRepository;
@@ -36,13 +31,12 @@ final class BolaoConferidoMessageHandler implements MessageHandlerInterface
     private LoggerInterface $logger;
 
     public function __construct(
-            ApostadorRepository $apostadorRepository,
-            BolaoRepository $bolaoRepository,
-            ApostaRepository $apostaRepository,
-            MailerInterface $mailer,
-            LoggerInterface $logger
-    )
-    {
+        ApostadorRepository $apostadorRepository,
+        BolaoRepository $bolaoRepository,
+        ApostaRepository $apostaRepository,
+        MailerInterface $mailer,
+        LoggerInterface $logger
+    ) {
         $this->apostadorRepository = $apostadorRepository;
         $this->bolaoRepository = $bolaoRepository;
         $this->apostaRepository = $apostaRepository;
@@ -59,7 +53,7 @@ final class BolaoConferidoMessageHandler implements MessageHandlerInterface
 
         $apostadores = $this->apostadorRepository->listEmail($bolaoDb);
         /** @var Apostador $apostador */
-        $addresses = array_map(fn($apostador): string => $apostador->getEmail(), $apostadores);
+        $addresses = array_map(fn ($apostador): string => $apostador->getEmail(), $apostadores);
 
         $email = (new TemplatedEmail())
                 ->htmlTemplate('bolao/aposta/conferencia_email.html.twig')
@@ -85,7 +79,7 @@ final class BolaoConferidoMessageHandler implements MessageHandlerInterface
 
             foreach ($aposta->getDezena() as $dezena) {
                 if (\in_array($dezena, $aposta->getConcurso()->getDezena())) {
-                    $dezenas[] = '<span class="sucesso">' . $dezena . '</span>';
+                    $dezenas[] = '<span class="sucesso">'.$dezena.'</span>';
                 } else {
                     $dezenas[] = $dezena;
                 }
@@ -110,7 +104,7 @@ final class BolaoConferidoMessageHandler implements MessageHandlerInterface
 
             foreach ($aposta->getDezena() as $dezena) {
                 if (\in_array($dezena, $aposta->getConcurso()->getDezena())) {
-                    $dezenas[] = '(' . $dezena . ')';
+                    $dezenas[] = '('.$dezena.')';
                 } else {
                     $dezenas[] = $dezena;
                 }

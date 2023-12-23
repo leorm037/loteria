@@ -37,7 +37,6 @@ use Symfony\Component\Uid\Uuid;
 #[Route('/bolao', name: 'app_bolao_')]
 class BolaoController extends AbstractController
 {
-
     private BolaoRepository $bolaoRepository;
     private ApostadorRepository $apostadorRepository;
     private ConcursoRepository $concursoRepository;
@@ -45,13 +44,12 @@ class BolaoController extends AbstractController
     private SluggerInterface $slugger;
 
     public function __construct(
-            BolaoRepository $bolaoRepository,
-            ApostadorRepository $apostadorRepository,
-            ConcursoRepository $concursoRepository,
-            BolaoComprovateApostaUploaderService $fileUpload,
-            SluggerInterface $slugger
-    )
-    {
+        BolaoRepository $bolaoRepository,
+        ApostadorRepository $apostadorRepository,
+        ConcursoRepository $concursoRepository,
+        BolaoComprovateApostaUploaderService $fileUpload,
+        SluggerInterface $slugger
+    ) {
         $this->bolaoRepository = $bolaoRepository;
         $this->apostadorRepository = $apostadorRepository;
         $this->concursoRepository = $concursoRepository;
@@ -78,9 +76,9 @@ class BolaoController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $this->denyAccessUnlessGranted(
-                UserEmailIsVerifiedVoter::EMAIL_IS_VERIFIED,
-                null,
-                'Verifique o seu e-mail e valide a sua conta de acesso.'
+            UserEmailIsVerifiedVoter::EMAIL_IS_VERIFIED,
+            null,
+            'Verifique o seu e-mail e valide a sua conta de acesso.'
         );
 
         $bolaoDTO = new BolaoDTO();
@@ -92,8 +90,8 @@ class BolaoController extends AbstractController
             $usuario = $this->getUser();
 
             $concurso = $this->cadastraConcursoSeNaoExistir(
-                    $bolaoDTO->getLoteria(),
-                    $bolaoDTO->getConcursoNumero()
+                $bolaoDTO->getLoteria(),
+                $bolaoDTO->getConcursoNumero()
             );
 
             $comprovanteApostaFile = $form->get('comprovanteAposta')->getData();
@@ -151,8 +149,8 @@ class BolaoController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $concurso = $this->cadastraConcursoSeNaoExistir(
-                    $bolaoDTO->getLoteria(),
-                    $bolaoDTO->getConcursoNumero()
+                $bolaoDTO->getLoteria(),
+                $bolaoDTO->getConcursoNumero()
             );
 
             $comprovanteApostaFile = $form->get('comprovanteAposta')->getData();
@@ -199,16 +197,16 @@ class BolaoController extends AbstractController
         $this->denyAccessUnlessGranted(BolaoVoter::DOWNLOAD, $bolao);
 
         $dateTime = new DateTime();
-        $fileName = strtolower($this->slugger->slug($bolao->getNome())) . '_' . $dateTime->format('Ymdhis');
+        $fileName = strtolower($this->slugger->slug($bolao->getNome())).'_'.$dateTime->format('Ymdhis');
         $fileExtension = pathinfo($bolao->getComprovanteAposta(), \PATHINFO_EXTENSION);
-        $fileNameDownload = $fileName . '.' . $fileExtension;
+        $fileNameDownload = $fileName.'.'.$fileExtension;
 
         $fileContent = file_get_contents($bolao->getComprovanteAposta(), \FILE_USE_INCLUDE_PATH);
         $response = new Response($fileContent);
 
         $disposition = HeaderUtils::makeDisposition(
-                        HeaderUtils::DISPOSITION_ATTACHMENT,
-                        $fileNameDownload
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            $fileNameDownload
         );
 
         $response->headers->set('Content-Disposition', $disposition);
@@ -244,7 +242,7 @@ class BolaoController extends AbstractController
 
         $this->bolaoRepository->remove($bolao, true);
 
-        $this->addFlash('success', 'Bolão foi excluído com sucesso.');
+        $this->addFlash('success', sprintf('O bolão "%s" foi excluído com sucesso.', $bolao->getNome()));
 
         return $this->json(['message' => 'success'], JsonResponse::HTTP_OK);
     }
@@ -253,7 +251,7 @@ class BolaoController extends AbstractController
     {
         $filename = $bolao->getComprovanteAposta();
 
-        if (file_exist($filename)) {
+        if (file_exists($filename)) {
             $this->fileUpload->delete($filename);
         }
     }

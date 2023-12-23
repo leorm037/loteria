@@ -19,7 +19,6 @@ use App\Repository\ApostadorRepository;
 use App\Repository\BolaoRepository;
 use App\Security\Voter\BolaoApostadorVoter;
 use App\Service\BolaoComprovateApostadorUploaderService;
-use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,19 +32,17 @@ use Symfony\Component\Uid\Uuid;
 #[Route('/bolao', name: 'app_bolao_apostador_')]
 class BolaoApostadorController extends AbstractController
 {
-
     private BolaoRepository $bolaoRepository;
     private ApostadorRepository $apostadorRepository;
     private BolaoComprovateApostadorUploaderService $fileUpload;
     private SluggerInterface $slugger;
 
     public function __construct(
-            BolaoRepository $bolaoRepository,
-            ApostadorRepository $apostadorRepository,
-            BolaoComprovateApostadorUploaderService $fileUpload,
-            SluggerInterface $slugger
-    )
-    {
+        BolaoRepository $bolaoRepository,
+        ApostadorRepository $apostadorRepository,
+        BolaoComprovateApostadorUploaderService $fileUpload,
+        SluggerInterface $slugger
+    ) {
         $this->bolaoRepository = $bolaoRepository;
         $this->apostadorRepository = $apostadorRepository;
         $this->fileUpload = $fileUpload;
@@ -72,9 +69,9 @@ class BolaoApostadorController extends AbstractController
         $bolao = $this->bolaoRepository->findById($uuid, $usuario);
 
         $this->denyAccessUnlessGranted(
-                BolaoApostadorVoter::LIST,
-                $bolao,
-                'Você só pode visualiar os seus próprios bolões'
+            BolaoApostadorVoter::LIST,
+            $bolao,
+            'Você só pode visualiar os seus próprios bolões'
         );
 
         $paginator = new PaginatorDTO();
@@ -84,12 +81,12 @@ class BolaoApostadorController extends AbstractController
         ;
 
         $result = $this->apostadorRepository->listPesquisar(
-                $bolao,
-                $usuario,
-                $bolaoApostadorPesquisar->getNome(),
-                $bolaoApostadorPesquisar->isPago(),
-                $paginator->getFirstResult(),
-                $paginator->getMaxResult()
+            $bolao,
+            $usuario,
+            $bolaoApostadorPesquisar->getNome(),
+            $bolaoApostadorPesquisar->isPago(),
+            $paginator->getFirstResult(),
+            $paginator->getMaxResult()
         );
 
         $paginator
@@ -115,9 +112,9 @@ class BolaoApostadorController extends AbstractController
         $bolao = $this->bolaoRepository->findById($uuid, $usuario);
 
         $this->denyAccessUnlessGranted(
-                BolaoApostadorVoter::NEW,
-                $bolao,
-                'Você só pode cadastrar apostadores nos seus próprios bolões'
+            BolaoApostadorVoter::NEW,
+            $bolao,
+            'Você só pode cadastrar apostadores nos seus próprios bolões'
         );
 
         $apostador = new Apostador();
@@ -164,9 +161,9 @@ class BolaoApostadorController extends AbstractController
         $apostador = $this->apostadorRepository->findById($uuid);
 
         $this->denyAccessUnlessGranted(
-                BolaoApostadorVoter::NEW,
-                $apostador->getBolao(),
-                'Você só pode editar apostadores nos seus próprios bolões'
+            BolaoApostadorVoter::NEW,
+            $apostador->getBolao(),
+            'Você só pode editar apostadores nos seus próprios bolões'
         );
 
         $form = $this->createForm(ApostadorFormType::class, $apostador);
@@ -203,11 +200,11 @@ class BolaoApostadorController extends AbstractController
     }
 
     #[Route(
-                '/apostador/{idApostador}/download',
-                name: 'download',
-                methods: ['GET'],
-                requirements: ['idApostador' => '[0-9a-f]{8}-[0-9a-f]{4}-6[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}']
-        )]
+        '/apostador/{idApostador}/download',
+        name: 'download',
+        methods: ['GET'],
+        requirements: ['idApostador' => '[0-9a-f]{8}-[0-9a-f]{4}-6[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}']
+    )]
     public function download(Request $request): Response
     {
         $uuid = Uuid::fromString($request->get('idApostador'));
@@ -217,22 +214,22 @@ class BolaoApostadorController extends AbstractController
 
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $this->denyAccessUnlessGranted(
-                BolaoApostadorVoter::NEW,
-                $apostador->getBolao(),
-                'Você só pode fazer download do comprovante de apostas dos apostadores dos seus próprios bolões'
+            BolaoApostadorVoter::NEW,
+            $apostador->getBolao(),
+            'Você só pode fazer download do comprovante de apostas dos apostadores dos seus próprios bolões'
         );
 
-        $dateTime = new DateTime();
-        $fileName = strtolower($this->slugger->slug($apostador->getNome())) . '_' . $dateTime->format('Ymdhis');
+        $dateTime = new \DateTime();
+        $fileName = strtolower($this->slugger->slug($apostador->getNome())).'_'.$dateTime->format('Ymdhis');
         $fileExtension = pathinfo($apostador->getComprovante(), \PATHINFO_EXTENSION);
-        $fileNameDownload = $fileName . '.' . $fileExtension;
+        $fileNameDownload = $fileName.'.'.$fileExtension;
 
         $fileContent = file_get_contents($apostador->getComprovante(), \FILE_USE_INCLUDE_PATH);
         $response = new Response($fileContent);
 
         $disposition = HeaderUtils::makeDisposition(
-                        HeaderUtils::DISPOSITION_ATTACHMENT,
-                        $fileNameDownload
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            $fileNameDownload
         );
 
         $mimeTypes = new MimeTypes();
@@ -245,11 +242,11 @@ class BolaoApostadorController extends AbstractController
     }
 
     #[Route(
-                '/apostador/{idApostador}/delete',
-                name: 'delete',
-                methods: ['GET'],
-                requirements: ['idApostador' => '[0-9a-f]{8}-[0-9a-f]{4}-6[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}']
-        )]
+        '/apostador/{idApostador}/delete',
+        name: 'delete',
+        methods: ['GET'],
+        requirements: ['idApostador' => '[0-9a-f]{8}-[0-9a-f]{4}-6[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}']
+    )]
     public function delete(Request $request): JsonResponse
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
@@ -265,7 +262,7 @@ class BolaoApostadorController extends AbstractController
 
         $this->denyAccessUnlessGranted(BolaoApostadorVoter::DELETE, $apostador->getBolao());
 
-        if (file_exist($apostador->getComprovante())) {
+        if (file_exists($apostador->getComprovante())) {
             $this->fileUpload->delete($apostador->getComprovante());
         }
 
