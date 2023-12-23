@@ -4,14 +4,14 @@
 {% block title %}{{ parent() }} :: Bolão{% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item active"><i class="fa-solid fa-people-group"></i> Bolão</li>
-{% endblock %}
+    <li class="breadcrumb-item active"><i class="fa-regular fa-futbol"></i> Bolão</li>
+    {% endblock %}
 
 {% block body %}
     <div class="card shadow-sm">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
-                <div><h1 class="h4 m-0"><i class="fa-solid fa-people-group"></i> Bolão</h1></div>
+                <div><h1 class="h4 m-0"><i class="fa-regular fa-futbol"></i> Bolão</h1></div>
                 <div>
                     <a data-loading="true" href="{{ path('app_bolao_new') }}" class="btn btn-primary btn-sm bg-gradient shadow-sm"><i class="bi bi-plus"></i> {{ 'btn.new'|trans({}, 'label') }}</a>
                 </div>
@@ -19,7 +19,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-striped table-hover">
+                <table class="table table-striped table-hover align-middle">
                     <thead>
                         <tr>
                             <th>Nome</th>
@@ -40,31 +40,36 @@
                                 <td class="text-end d-none d-xl-table-cell">{{ i.apostadores }}</td>
                                 <td class="text-end d-none d-xl-table-cell">{{ i.apostas }}</td>
                                 <td class="text-end">
-                                    <span class="d-none d-lg-inline-block">(cotas: {{ (i.total > 0) ? i.total : 0 }}) </span>
-                                    {{ (i.bolao.valorCota > 0) ? (i.total * i.bolao.valorCota)|format_currency('BRL') : 'valor da cota não inforado' }}
+                                    <span class="badge text-bg-secondary" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Quantidade de cotas">
+                                        {{ (i.total > 0) ? i.total : 0 }}
+                                        <span class="visually-hidden">cotas</span>
+                                    </span> 
+                                    {{ (i.bolao.valorCota > 0) ? (i.total * i.bolao.valorCota)|format_currency('BRL') : 'valor não inforado' }}
                                 </td>
-                                <td class="text-center d-grid gap-1 d-md-block">
-                                    <a data-loading="true" href="{{ path('app_bolao_apostador_index', {'id': i.bolao.id}) }}" class="btn btn-sm btn-secondary shadow-sm">
-                                        <i class="bi bi-people"></i> <span class="d-none d-lg-inline-block">Apostadores</span>
-                                    </a>
-                                    <a data-loading="true" href="{{ path('app_bolao_aposta_index', {'id': i.bolao.id}) }}" class="btn btn-sm btn-secondary shadow-sm">
-                                        <i class="bi bi-ticket-perforated"></i> <span class="d-none d-lg-inline-block">Apostas</span>
-                                    </a>
-                                    {% if i.bolao.comprovanteAposta and is_granted('BOLAO_DOWNLOAD', i.bolao) %}
-                                        <a href="{{ path('app_bolao_download', {'id': i.bolao.id}) }}" class="btn btn-sm btn-secondary shadow-sm">
-                                            <i class="bi bi-file-arrow-down"></i> <span class="d-none d-lg-inline-block">Comprovante</span>
+                                <td>
+                                    <div class="d-grid gap-1 d-md-block text-center">
+                                        <a role="button" data-loading="true" href="{{ path('app_bolao_apostador_index', {'idBolao': i.bolao.id}) }}" class="btn btn-sm btn-secondary">
+                                            <i class="bi bi-people"></i> <span class="d-none d-xl-inline-block">Apostadores</span>
                                         </a>
-                                    {% endif %}
-                                    {% if is_granted('BOLAO_DELETE', i.bolao) %}
-                                        <a href="{{ path('app_bolao_delete', {'id': i.bolao.id}) }}" class="btn btn-sm btn-danger shadow-sm">
-                                            <i class="bi bi-trash"></i> <span class="d-none d-lg-inline-block">Excluir</span>
+                                        <a role="button" data-loading="true" href="{{ path('app_bolao_aposta_index', {'id': i.bolao.id}) }}" class="btn btn-sm btn-secondary">
+                                            <i class="bi bi-ticket-perforated"></i> <span class="d-none d-xl-inline-block">Apostas</span>
                                         </a>
-                                    {% endif %}
-                                    {% if is_granted('BOLAO_EDIT', i.bolao) %}
-                                        <a data-loading="true" href="{{ path('app_bolao_edit', {'id': i.bolao.id}) }}" class="btn btn-sm btn-secondary shadow-sm">
-                                            <i class="bi bi-pencil-square"></i> <span class="d-none d-lg-inline-block">Alterar</span>
-                                        </a>
-                                    {% endif %}
+                                        {% if i.bolao.comprovanteAposta and is_granted('BOLAO_DOWNLOAD', i.bolao) %}
+                                            <a role="button" href="{{ path('app_bolao_download', {'id': i.bolao.id}) }}" class="btn btn-sm btn-secondary">
+                                                <i class="bi bi-file-arrow-down"></i> <span class="d-none d-xl-inline-block">Comprovante</span>
+                                            </a>
+                                        {% endif %}
+                                        {% if is_granted('BOLAO_DELETE', i.bolao) %}
+                                            <a role="button" data-delete="{{ i.bolao.id }}" class="btn btn-sm btn-danger">
+                                                <i class="bi bi-trash"></i> <span class="d-none d-xl-inline-block">Excluir</span>
+                                            </a>
+                                        {% endif %}
+                                        {% if is_granted('BOLAO_EDIT', i.bolao) %}
+                                            <a role="button" data-loading="true" href="{{ path('app_bolao_edit', {'id': i.bolao.id}) }}" class="btn btn-sm btn-secondary">
+                                                <i class="bi bi-pencil-square"></i> <span class="d-none d-xl-inline-block">Alterar</span>
+                                            </a>
+                                        {% endif %}
+                                    </div>
                                 </td>
                             </tr>
                         {% else %}
@@ -80,4 +85,13 @@
             {{ boloes|length }} registros
         </div>
     </div>
+    {{ include('_delete_modal.html.twig') }}
+{% endblock %}
+
+{% block javascripts_footer %}
+    {{ parent() }}
+    <script>
+        const ENTITY_URL = "/bolao";
+    </script>
+    <script type="text/javascript" src="{{ asset('js/_delete_modal.js') }}"></script>
 {% endblock %}

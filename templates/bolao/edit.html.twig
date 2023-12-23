@@ -4,7 +4,7 @@
 {% block title %}{{ parent() }} :: Bolão :: Alterar{% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a data-loading="true" href="{{ path('app_bolao_index') }}" class="text-decoration-none"><i class="fa-solid fa-people-group"></i> Bolão</a></li>
+    <li class="breadcrumb-item"><a data-loading="true" href="{{ path('app_bolao_index') }}" class="text-decoration-none"><i class="fa-regular fa-futbol"></i> Bolão</a></li>
     <li class="breadcrumb-item active"><i class="bi bi-pencil-square"></i> Alterar</li>
     {% endblock %}
 
@@ -12,7 +12,7 @@
     {{ form_start(form, {'attr': {'data-loading': 'true'}}) }}
     <div class="card shadow-sm">
         <div class="card-header">
-            <h1 class="h4 m-0"><i class="fa-solid fa-people-group"></i> Alterar bolão</h1>
+            <h1 class="h4 m-0"><i class="fa-regular fa-futbol"></i> Alterar bolão</h1>
         </div>
         <div class="card-body">
             {{ include('bolao/_form.html.twig') }}

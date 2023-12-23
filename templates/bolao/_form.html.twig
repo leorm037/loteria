@@ -15,23 +15,23 @@
     </div>
     <div class="col-12">
         <div class="row">
-            <div class="col-12 col-lg-10 col-md-9">
+            {% if bolao.comprovante %}
+                <div class="col-12 col-lg-10 col-md-9">
+            {% else %}
+                <div class="col-12">
+            {% endif %}
                 {{ form_row(form.comprovanteAposta) }}
             </div>
-            <div class="col-12 col-lg-2 col-md-3">
-                <div class="mb-3 d-grid">
-                    <label for="comprovante" class="form-label">Comprovante</label>
-                    {% if bolao.comprovante %}
+            {% if bolao.comprovante %}
+                <div class="col-12 col-lg-2 col-md-3">
+                    <div class="mb-3 d-grid">
+                        <label for="comprovante" class="form-label">Comprovante</label>
                         <a href="{{ path('app_bolao_download', {'id': app.request.get('id')}) }}" class="btn btn-secondary shadow-sm">
                             <i class="bi bi-file-arrow-down"></i> Download
                         </a>
-                    {% else %}
-                        <a class="btn btn-secondary shadow-sm disabled">
-                            <i class="bi bi-file-arrow-down"></i> Download
-                        </a>
-                    {% endif %}
+                    </div>
                 </div>
-            </div>
+            {% endif %}
         </div>
     </div>    
 </div>

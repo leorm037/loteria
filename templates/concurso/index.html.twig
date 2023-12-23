@@ -12,8 +12,8 @@
         <div class="card-header">
             <h1 class="h4 m-0"><i class="bi bi-suit-club-fill"></i> Concurso</h1>
         </div>
-        <div class="card-body">
-            <div class="mb-3">
+        <div class="card-body bg-light border-bottom">
+            <div class="mb-3 mb-md-0">
                 <select name="loteria" id="loteria" class="form-select">
                     <option value{% if not app.request.get('loteria') %} selected{% endif %}>Selecione uma loteria</option>
                     {% for loteria in loterias %}

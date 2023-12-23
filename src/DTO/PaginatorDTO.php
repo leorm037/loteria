@@ -17,19 +17,23 @@ class PaginatorDTO
 {
     private int $page = 1;
     private int $maxResult = 10;
-    private Paginator $result;
+    private ?Paginator $result;
 
-    public function getResult(): Paginator
+    public function getResult(): ?Paginator
     {
         return $this->result;
     }
 
     public function getCount(): int
     {
+        if (null === $this->result) {
+            return 0;
+        }
+
         return $this->result->count();
     }
 
-    public function setResult(Paginator $result): static
+    public function setResult(?Paginator $result): static
     {
         $this->result = $result;
 

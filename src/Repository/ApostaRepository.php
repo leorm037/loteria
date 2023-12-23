@@ -29,7 +29,6 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ApostaRepository extends ServiceEntityRepository
 {
-
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Aposta::class);
@@ -68,11 +67,10 @@ class ApostaRepository extends ServiceEntityRepository
     }
 
     public function listPesquisar(
-            Bolao $bolao,
-            int $firstResult = 1,
-            int $maxResult = 10
-    ): Paginator
-    {
+        Bolao $bolao,
+        int $firstResult = 1,
+        int $maxResult = 10
+    ): Paginator {
         $query = $this->createQueryBuilder('a')
                 ->where('a.bolao = :bolao')
                 ->setParameter('bolao', $bolao->getId()->toBinary())

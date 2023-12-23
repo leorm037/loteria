@@ -1,0 +1,25 @@
+{# templates/_delete_modal.html #}
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title h3" id="deleteModalLabel"><i class="bi bi-trash"></i> Confirmar exclusão</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning" role="alert">
+                    <i class="bi bi-exclamation-diamond-fill"></i> Não é possível desfazer essa operação.
+                </div>
+                <p id="deleteModalMessage">Deseja realmente excluir?</p>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+                <div>
+                    <button type="button" id="deleteModalConfirm" class="btn btn-danger">Excluir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

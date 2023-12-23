@@ -22,21 +22,19 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsCommand(
-            name: 'loteria:aposta:conferir',
-            description: 'Conferir as apostas',
-    )]
+    name: 'loteria:aposta:conferir',
+    description: 'Conferir as apostas',
+)]
 class LoteriaApostaConferirCommand extends Command
 {
-
     private MessageBusInterface $bus;
     private ApostaRepository $apostaRepository;
     private $messages = [];
 
     public function __construct(
-            ApostaRepository $apostaRepository,
-            MessageBusInterface $bus
-    )
-    {
+        ApostaRepository $apostaRepository,
+        MessageBusInterface $bus
+    ) {
         $this->apostaRepository = $apostaRepository;
         $this->bus = $bus;
 
@@ -45,7 +43,6 @@ class LoteriaApostaConferirCommand extends Command
 
     protected function configure(): void
     {
-        
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -72,11 +69,11 @@ class LoteriaApostaConferirCommand extends Command
             $this->messages[] = [
                 'status' => 'text',
                 'message' => sprintf(
-                        'Loteria %s, concurso %s, aposta %s.',
-                        $aposta->getConcurso()->getLoteria()->getNome(),
-                        $aposta->getConcurso()->getNumero(),
-                        implode("-", $aposta->getDezena())
-                )
+                    'Loteria %s, concurso %s, aposta %s.',
+                    $aposta->getConcurso()->getLoteria()->getNome(),
+                    $aposta->getConcurso()->getNumero(),
+                    implode('-', $aposta->getDezena())
+                ),
             ];
 
             if (null !== $aposta->getBolao()) {

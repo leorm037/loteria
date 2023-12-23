@@ -18,10 +18,13 @@ use App\Repository\ApostadorRepository;
 use App\Repository\ApostaRepository;
 use App\Repository\BolaoRepository;
 use Psr\Log\LoggerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
-use Symfony\Component\Mime\Email;
-use Twig\Environment;
+use Symfony\Component\Mime\MimeTypes;
+use Symfony\Component\Mime\Part\DataPart;
+
 
 final class BolaoConferidoMessageHandler implements MessageHandlerInterface
 {
@@ -30,7 +33,6 @@ final class BolaoConferidoMessageHandler implements MessageHandlerInterface
     private BolaoRepository $bolaoRepository;
     private ApostaRepository $apostaRepository;
     private MailerInterface $mailer;
-    private Environment $twig;
     private LoggerInterface $logger;
 
     public function __construct(
@@ -38,7 +40,6 @@ final class BolaoConferidoMessageHandler implements MessageHandlerInterface
             BolaoRepository $bolaoRepository,
             ApostaRepository $apostaRepository,
             MailerInterface $mailer,
-            Environment $twig,
             LoggerInterface $logger
     )
     {
@@ -46,7 +47,6 @@ final class BolaoConferidoMessageHandler implements MessageHandlerInterface
         $this->bolaoRepository = $bolaoRepository;
         $this->apostaRepository = $apostaRepository;
         $this->mailer = $mailer;
-        $this->twig = $twig;
         $this->logger = $logger;
     }
 
@@ -61,21 +61,15 @@ final class BolaoConferidoMessageHandler implements MessageHandlerInterface
         /** @var Apostador $apostador */
         $addresses = array_map(fn($apostador): string => $apostador->getEmail(), $apostadores);
 
-        $bodyHtml = $this->twig->render('bolao/aposta/conferencia_email.html.twig', [
-            'bolao' => $bolaoDb,
-            'resultados' => $this->formatHtml($apostas),
-        ]);
-
-        $bodyText = $this->twig->render('bolao/aposta/conferencia_email.text.twig', [
-            'bolao' => $bolaoDb,
-            'resultados' => $this->formatText($apostas),
-        ]);
-
-        $email = (new Email())
+        $email = (new TemplatedEmail())
+                ->htmlTemplate('bolao/aposta/conferencia_email.html.twig')
+                ->textTemplate('bolao/aposta/conferencia_email.text.twig')
+                ->context([
+                    'bolao' => $bolaoDb,
+                    'resultados' => $this->formatHtml($apostas),
+                ])
                 ->to(...$addresses)
                 ->subject($bolaoDb->getNome())
-                ->html($bodyHtml)
-                ->text($bodyText)
         ;
 
         $this->mailer->send($email);

@@ -4,7 +4,7 @@
 {% block title %}{{ parent() }} :: Bolão :: Aposta{% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a data-loading="true" href="{{ path('app_bolao_index') }}" class="text-decoration-none"><i class="fa-solid fa-people-group"></i> Bolão</a></li>
+    <li class="breadcrumb-item"><a data-loading="true" href="{{ path('app_bolao_index') }}" class="text-decoration-none"><i class="fa-regular fa-futbol"></i> Bolão</a></li>
     <li class="breadcrumb-item active"><i class="bi bi-ticket-perforated"></i> Aposta</li>
     {% endblock %}
 
@@ -16,9 +16,6 @@
                 <div>
                     <a data-loading="true" href="{{ path('app_bolao_aposta_import', {'id': bolao.id}) }}" class="btn btn-primary btn-sm bg-gradient shadow-sm">
                         <i class="bi bi-box-arrow-in-down"></i> {{ 'btn.import'|trans({}, 'label') }}
-                    </a>
-                    <a data-loading="true" href="{{ path('app_bolao_aposta_new', {'id': bolao.id}) }}" class="btn btn-primary btn-sm bg-gradient shadow-sm">
-                        <i class="bi bi-plus"></i> {{ 'btn.new'|trans({}, 'label') }}
                     </a>
                 </div>
             </div>
@@ -38,7 +35,7 @@
                     <tbody class="table-group-divider">
                         {% for aposta in paginator.result %}
                             <tr>
-                                <td>{{ aposta.dezena|join(', ') }}</td>
+                                <td class="text-end">{{ aposta.dezena|join(', ') }}</td>
                                 <td class="text-end">{{ aposta.acerto|default('-') }}</td>
                                 <td class="text-center">{{ (aposta.isConferido) ? 'Sim' : 'Não' }}</td>
                                 <td class="text-center"></td>

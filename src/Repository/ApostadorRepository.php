@@ -13,7 +13,10 @@ namespace App\Repository;
 
 use App\Entity\Apostador;
 use App\Entity\Bolao;
+use App\Entity\Usuario;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Uid\Uuid;
 
@@ -27,6 +30,7 @@ use Symfony\Component\Uid\Uuid;
  */
 class ApostadorRepository extends ServiceEntityRepository
 {
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Apostador::class);
@@ -72,6 +76,57 @@ class ApostadorRepository extends ServiceEntityRepository
                         ->getQuery()
                         ->getOneOrNullResult()
         ;
+    }
+
+    public function listPesquisar(
+            Bolao $bolao,
+            Usuario $usuario,
+            ?string $nome = null,
+            ?bool $pago = null,
+            int $firstResult = 1,
+            int $maxResult = 10
+    ): Paginator
+    {
+        if (!\in_array($maxResult, [10, 25, 50, 100], true)) {
+            $maxResult = 10;
+        }
+
+        $query = $this->createQueryBuilder('a')
+                ->where('a.bolao = :bolao')
+                ->setParameter('bolao', $bolao->getId()->toBinary())
+                ->andWhere('b.usuario = :usuario')
+                ->setParameter('usuario', $usuario->getId()->toBinary())
+                ->innerJoin('a.bolao', 'b', Join::WITH, 'a.bolao = b.id')
+        ;
+
+        if ($nome) {
+            $query = $query->andWhere('a.nome LIKE :nome')
+                    ->setParameter('nome', '%' . $nome . '%')
+            ;
+        }
+
+        if (null !== $pago) {
+            $query = $query->andWhere('a.isPago = :pago')
+                    ->setParameter('pago', $pago)
+            ;
+        }
+
+        $query = $query->setFirstResult($firstResult)
+                ->setMaxResults($maxResult)
+                ->orderBy('a.nome', 'ASC')
+                ->getQuery()
+        ;
+
+        return new Paginator($query);
+    }
+
+    public function remove(Apostador $apostador, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($apostador);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
     }
 
     //    /**

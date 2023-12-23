@@ -28,6 +28,7 @@ use Symfony\Component\Uid\Uuid;
  */
 class BolaoRepository extends ServiceEntityRepository
 {
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Bolao::class);
@@ -85,6 +86,15 @@ class BolaoRepository extends ServiceEntityRepository
     public function save(Bolao $bolao, bool $flush = false): void
     {
         $this->getEntityManager()->persist($bolao);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(Bolao $bolao, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($bolao);
 
         if ($flush) {
             $this->getEntityManager()->flush();

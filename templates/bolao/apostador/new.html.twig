@@ -4,7 +4,7 @@
 {% block title %}{{ parent() }} :: Bolão :: Apostador :: Novo{% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a data-loading="true" href="{{ path('app_bolao_index') }}" class="text-decoration-none"><i class="fa-solid fa-people-group"></i> Bolão</a></li>
+    <li class="breadcrumb-item"><a data-loading="true" href="{{ path('app_bolao_index') }}" class="text-decoration-none"><i class="fa-regular fa-futbol"></i> Bolão</a></li>
     <li class="breadcrumb-item"><a data-loading="true" href="{{ path('app_bolao_apostador_index', {'id': bolao.id}) }}" class="text-decoration-none"><i class="bi bi-people"></i> Apostador</a></li>
     <li class="breadcrumb-item active"><i class="bi bi-plus"></i> Novo</li>
     {% endblock %}

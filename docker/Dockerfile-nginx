@@ -1,0 +1,18 @@
+
+FROM nginx:latest
+
+RUN apt-get -y update \
+    && apt-get install openssl
+
+RUN [ -d /etc/nginx/ssl ] && rm -R /etc/nginx/ssl
+
+RUN mkdir /etc/nginx/ssl
+
+RUN openssl req -x509 -text -nodes -days 365 -newkey rsa:2048 \
+    -keyout /etc/nginx/ssl/nginx-selfsigned.key \
+    -out /etc/nginx/ssl/nginx-selfsigned.crt \
+    -subj "/C=BR/ST=Distrito Federal/L=Brasilia/O=Pagina em Construcao/OU=TI/CN=loteria.local"
+
+RUN openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
+
+WORKDIR /app

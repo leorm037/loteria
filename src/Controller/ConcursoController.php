@@ -37,31 +37,38 @@ class ConcursoController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(Request $request): Response
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $loterias = $this->loteriaRepository->list();
 
         $paginator = new PaginatorDTO();
+        $result = null;
         $loteria = null;
 
         $page = $request->get('page', 1);
         $loteriaId = $request->get('loteria');
         $maxResult = $request->get('maxResult', 10);
 
+        $paginator
+                ->setPage($page)
+                ->setMaxResult($maxResult)
+        ;
+
         if ($loteriaId) {
             $uuid = Uuid::fromString($loteriaId);
 
             $loteria = $this->loteriaRepository->findById($uuid);
+
+            $result = $this->concursoRepository->listPesquisar(
+                $loteria,
+                $paginator->getFirstResult(),
+                $paginator->getMaxResult()
+            );
         }
 
         $paginator
-                ->setPage($page)
-                ->setMaxResult($maxResult)
-                ->setResult($this->concursoRepository->listPesquisar(
-                    $loteria,
-                    $paginator->getFirstResult(),
-                    $paginator->getMaxResult()
-                ));
+                ->setResult($result)
+        ;
 
         return $this->render('concurso/index.html.twig', [
                     'paginator' => $paginator,

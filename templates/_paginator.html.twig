@@ -1,6 +1,6 @@
 {# templates/_paginator.html.twig #}
-<div class="row">
-    <div class="col-2">
+<div class="row row-gap-2">
+    <div class="col-md-2 col-12">
         <select class="form-select" name="maxResult" id="maxResult">
             <option value="10"{% if 10 == paginator.maxResult %} selected="true"{% endif %}>10</option>
             <option value="25"{% if 25 == paginator.maxResult %} selected="true"{% endif %}>25</option>
@@ -8,7 +8,7 @@
             <option value="100"{% if 100 == paginator.maxResult %} selected="true"{% endif %}>100</option>
         </select>
     </div>
-    <div class="col-8">
+    <div class="col-md-8 col-12">
         <nav aria-label="Page navigation">
             <ul class="pagination justify-content-center m-0">
                 {% if paginator.pages %}
@@ -42,7 +42,7 @@
             </ul>
         </nav>
     </div>
-    <div class="col-2 my-auto text-end">
+    <div class="col-md-2 col-12 my-auto text-end">
         {{ paginator.count|number_format(0, ',', '.') }} registros
     </div>
 </div>

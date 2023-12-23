@@ -60,7 +60,7 @@ class BolaoFormType extends AbstractType
                     'mapped' => false,
                     'constraints' => [
                         new File([
-                            'maxSize' => '1024k',
+                            'maxSize' => '10240k',
                             'mimeTypes' => [
                                 'application/pdf',
                                 'application/x-pdf',
@@ -75,7 +75,7 @@ class BolaoFormType extends AbstractType
                     'label' => 'label.bolao.valorCota',
                     'currency' => 'BRL',
                     'scale' => 2,
-                    'required' => true,
+                    'required' => false,
                 ])
         ;
     }

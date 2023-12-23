@@ -19,13 +19,15 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class BolaoVoter extends Voter
 {
+
     public const EDIT = 'BOLAO_EDIT';
     public const DOWNLOAD = 'BOLAO_DOWNLOAD';
+    public const DELETE = 'BOLAO_DELETE';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
         return \in_array($attribute, [
-                    self::EDIT, self::DOWNLOAD,
+                        self::EDIT, self::DOWNLOAD, self::DELETE,
                 ]) && $subject instanceof Bolao;
     }
 
@@ -45,6 +47,8 @@ class BolaoVoter extends Voter
                 return $this->canEdit($user, $subject);
             case self::DOWNLOAD:
                 return $this->canDownload($user, $subject);
+            case self::DELETE:
+                return $this->canDelete($user, $subject);
         }
 
         return false;
@@ -56,6 +60,11 @@ class BolaoVoter extends Voter
     }
 
     private function canDownload(Usuario $user, Bolao $bolao): bool
+    {
+        return $user === $bolao->getUsuario();
+    }
+
+    private function canDelete(Usuario $user, Bolao $bolao): bool
     {
         return $user === $bolao->getUsuario();
     }

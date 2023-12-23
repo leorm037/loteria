@@ -12,19 +12,24 @@
 namespace App\Controller;
 
 use App\DTO\BolaoDTO;
+use App\Entity\Apostador;
 use App\Entity\Bolao;
 use App\Entity\Concurso;
 use App\Entity\Loteria;
 use App\Form\BolaoFormType;
+use App\Repository\ApostadorRepository;
 use App\Repository\BolaoRepository;
 use App\Repository\ConcursoRepository;
 use App\Security\Voter\BolaoVoter;
 use App\Security\Voter\UserEmailIsVerifiedVoter;
 use App\Service\BolaoComprovateApostaUploaderService;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Uid\Uuid;
@@ -32,18 +37,23 @@ use Symfony\Component\Uid\Uuid;
 #[Route('/bolao', name: 'app_bolao_')]
 class BolaoController extends AbstractController
 {
+
     private BolaoRepository $bolaoRepository;
+    private ApostadorRepository $apostadorRepository;
     private ConcursoRepository $concursoRepository;
     private BolaoComprovateApostaUploaderService $fileUpload;
     private SluggerInterface $slugger;
 
     public function __construct(
-        BolaoRepository $bolaoRepository,
-        ConcursoRepository $concursoRepository,
-        BolaoComprovateApostaUploaderService $fileUpload,
-        SluggerInterface $slugger
-    ) {
+            BolaoRepository $bolaoRepository,
+            ApostadorRepository $apostadorRepository,
+            ConcursoRepository $concursoRepository,
+            BolaoComprovateApostaUploaderService $fileUpload,
+            SluggerInterface $slugger
+    )
+    {
         $this->bolaoRepository = $bolaoRepository;
+        $this->apostadorRepository = $apostadorRepository;
         $this->concursoRepository = $concursoRepository;
         $this->fileUpload = $fileUpload;
         $this->slugger = $slugger;
@@ -68,9 +78,9 @@ class BolaoController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $this->denyAccessUnlessGranted(
-            UserEmailIsVerifiedVoter::EMAIL_IS_VERIFIED,
-            null,
-            'Verifique o seu e-mail e valide a sua conta de acesso.'
+                UserEmailIsVerifiedVoter::EMAIL_IS_VERIFIED,
+                null,
+                'Verifique o seu e-mail e valide a sua conta de acesso.'
         );
 
         $bolaoDTO = new BolaoDTO();
@@ -82,8 +92,8 @@ class BolaoController extends AbstractController
             $usuario = $this->getUser();
 
             $concurso = $this->cadastraConcursoSeNaoExistir(
-                $bolaoDTO->getLoteria(),
-                $bolaoDTO->getConcursoNumero()
+                    $bolaoDTO->getLoteria(),
+                    $bolaoDTO->getConcursoNumero()
             );
 
             $comprovanteApostaFile = $form->get('comprovanteAposta')->getData();
@@ -141,8 +151,8 @@ class BolaoController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $concurso = $this->cadastraConcursoSeNaoExistir(
-                $bolaoDTO->getLoteria(),
-                $bolaoDTO->getConcursoNumero()
+                    $bolaoDTO->getLoteria(),
+                    $bolaoDTO->getConcursoNumero()
             );
 
             $comprovanteApostaFile = $form->get('comprovanteAposta')->getData();
@@ -188,27 +198,78 @@ class BolaoController extends AbstractController
 
         $this->denyAccessUnlessGranted(BolaoVoter::DOWNLOAD, $bolao);
 
-        $dateTime = new \DateTime();
-        $fileName = strtolower($this->slugger->slug($bolao->getNome())).'_'.$dateTime->format('Ymdhis');
+        $dateTime = new DateTime();
+        $fileName = strtolower($this->slugger->slug($bolao->getNome())) . '_' . $dateTime->format('Ymdhis');
         $fileExtension = pathinfo($bolao->getComprovanteAposta(), \PATHINFO_EXTENSION);
-        $fileNameDownload = $fileName.'.'.$fileExtension;
+        $fileNameDownload = $fileName . '.' . $fileExtension;
 
         $fileContent = file_get_contents($bolao->getComprovanteAposta(), \FILE_USE_INCLUDE_PATH);
         $response = new Response($fileContent);
 
         $disposition = HeaderUtils::makeDisposition(
-            HeaderUtils::DISPOSITION_ATTACHMENT,
-            $fileNameDownload
+                        HeaderUtils::DISPOSITION_ATTACHMENT,
+                        $fileNameDownload
         );
 
         $response->headers->set('Content-Disposition', $disposition);
 
+        $mimeTypes = new MimeTypes();
+        $mimeType = $mimeTypes->guessMimeType($bolao->getComprovanteAposta());
+
+        $response->headers->set('Content-type', $mimeType);
+
         return $response;
     }
 
-    #[Route('/{id}/delete', name: 'delete', methods: ['POST'], requirements: ['id' => '[0-9a-f]{8}-[0-9a-f]{4}-6[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}'])]
-    public function delete(Request $request): Response
+    #[Route('/{id}/delete', name: 'delete', methods: ['GET'], requirements: ['id' => '[0-9a-f]{8}-[0-9a-f]{4}-6[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}'])]
+    public function delete(Request $request): JsonResponse
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $usuario = $this->getUser();
+
+        $idBolao = $request->get('id');
+        $uuidBolao = Uuid::fromString($idBolao);
+
+        $bolao = $this->bolaoRepository->findById($uuidBolao, $usuario);
+
+        if (null === $bolao) {
+            return $this->json(['message' => 'error'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        $this->denyAccessUnlessGranted(BolaoVoter::DELETE, $bolao);
+
+        $this->excluirApostadorComprovatePagamento($bolao);
+        $this->excluirBolaoComprovanteAposta($bolao);
+
+        $this->bolaoRepository->remove($bolao, true);
+
+        $this->addFlash('success', 'Bolão foi excluído com sucesso.');
+
+        return $this->json(['message' => 'success'], JsonResponse::HTTP_OK);
+    }
+
+    private function excluirBolaoComprovanteAposta(Bolao $bolao): void
+    {
+        $filename = $bolao->getComprovanteAposta();
+
+        if (file_exist($filename)) {
+            $this->fileUpload->delete($filename);
+        }
+    }
+
+    private function excluirApostadorComprovatePagamento(Bolao $bolao): void
+    {
+        $apostadores = $this->apostadorRepository->list($bolao);
+
+        /** @var Apostador $apostador */
+        foreach ($apostadores as $apostador) {
+            $filename = $apostador->getComprovante();
+
+            if (file_exists($filename)) {
+                $this->fileUpload->delete($filename);
+            }
+        }
     }
 
     private function cadastraConcursoSeNaoExistir(Loteria $loteria, int $concursoNumero): Concurso

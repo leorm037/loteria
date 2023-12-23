@@ -43,12 +43,14 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
+            $user
+                    ->setPassword(
+                        $userPasswordHasher->hashPassword(
+                            $user,
+                            $form->get('plainPassword')->getData()
+                        ))
+                    ->setRoles(['ROLE_USER'])
+            ;
 
             $entityManager->persist($user);
             $entityManager->flush();
@@ -57,9 +59,9 @@ class RegistrationController extends AbstractController
             $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
                 (new TemplatedEmail())
 //                    ->from(new Address('bolao@paginaemconstrucao.net.br', 'Bolão da família'))
-                    ->to($user->getEmail())
-                    ->subject('Por favor, confirme o seu e-mail.')
-                    ->htmlTemplate('registration/confirmation_email.html.twig')
+                        ->to($user->getEmail())
+                        ->subject('Por favor, confirme o seu e-mail.')
+                        ->htmlTemplate('registration/confirmation_email.html.twig')
             );
             // do anything else you need here, like send an email
 
@@ -67,7 +69,7 @@ class RegistrationController extends AbstractController
         }
 
         return $this->render('registration/register.html.twig', [
-            'registrationForm' => $form->createView(),
+                    'registrationForm' => $form->createView(),
         ]);
     }
 
