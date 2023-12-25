@@ -1,11 +1,11 @@
-{# templates/bolao/apostador/index.html.twig #}
+{# templates/bolao/aposta/index.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ parent() }} :: Bolão :: Apostador :: Alterar{% endblock %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a data-loading="true" href="{{ path('app_bolao_index') }}" class="text-decoration-none"><i class="fa-regular fa-futbol"></i> Bolão</a></li>
-    <li class="breadcrumb-item"><a data-loading="true" href="{{ path('app_bolao_apostador_index', {'idBolao': apostador.bolao.id}) }}" class="text-decoration-none"><i class="bi bi-people-fill"></i> Apostador</a></li>
+    <li class="breadcrumb-item"><a data-loading="true" href="{{ path('app_bolao_aposta_index', {'idBolao': bolao.id}) }}" class="text-decoration-none"><i class="bi bi-ticket-perforated-fill"></i> Aposta</a></li>
     <li class="breadcrumb-item active"><i class="bi bi-pencil-square"></i> Alterar</li>
     {% endblock %}
 
@@ -13,17 +13,17 @@
     {{ form_start(form, {'attr': {'data-loading': 'true'}}) }}
     <div class="card shadow-sm">
         <div class="card-header">
-            <h1 class="h4 m-0"><i class="bi bi-people-fill"></i> Alterar apostador</h1>
+            <h1 class="h4 m-0"><i class="bi bi-ticket-perforated-fill"></i> Alterar aposta</h1>
         </div>
 
         {{ include('bolao/_bolao.html.twig') }}
 
         <div class="card-body">
-            {{ include('bolao/apostador/_form.html.twig') }}
+            {{ include('bolao/aposta/_form.html.twig') }}
         </div>
         <div class="card-footer bg-gradient d-flex justify-content-between">
             <div>
-                <a data-loading="true" class="btn btn-outline-secondary bg-gradient btn-sm" href="{{ path('app_bolao_apostador_index', {'idBolao': apostador.bolao.id}) }}"><i class="bi bi-arrow-left"></i> Voltar</a>
+                <a data-loading="true" class="btn btn-outline-secondary bg-gradient btn-sm" href="{{ path('app_bolao_aposta_index', {'idBolao': bolao.id}) }}"><i class="bi bi-arrow-left"></i> Voltar</a>
             </div>
             <div>
                 <button type="reset" class="btn btn-secondary bg-gradient btn-sm"><i class="fa-solid fa-broom"></i> Limpar</button>
@@ -32,4 +32,13 @@
         </div>
     </div>
     {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts_footer %}
+    {{ parent() }}
+    <script>
+        const DEZENAS_MIN = {{ min(bolao.concurso.loteria.dezena) }};
+        const DEZENAS_MAX = {{ max(bolao.concurso.loteria.dezena) }};
+    </script>
+    <script type="text/javascript" src="{{ asset('js/bolao/aposta/_form.js') }}"></script>
 {% endblock %}

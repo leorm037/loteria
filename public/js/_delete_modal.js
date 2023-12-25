@@ -8,12 +8,8 @@ $('a.btn-danger[data-delete]').each(function () {
         $('#deleteModalConfirm').on('click', function () {
             $.LoadingOverlay('show');
             let url = BASE_URL + ENTITY_URL + '/' + id + '/delete';
-            $.get(url).done(function () {
-                redirectUrl(BASE_URL + ENTITY_URL);
-            }).fail(function () {
-                $.LoadingOverlay('hide');
-                $('#deleteModal').modal('hide');
-            });
+            
+            redirectUrl(url);
         });
     });
 });

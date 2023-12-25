@@ -5,8 +5,10 @@ form.select.placeholder: Selecione uma opção
 help.bolao.comprovanteAposta: Envie um arquivo no formato PDF, JPG ou PNG
 help.bolao.apostador.comprovante: Envie um arquivo no formato PDF, JPG ou PNG
 help.bolao.aposta.fileCsv: Envie um arquivo de planilha no formato CSV
+help.aposta.dezena.marcar: Selecione a quantidade de dezenas que deseja apostar
 label.bolao.comprovanteAposta: Comprovante de aposta
 label.bolao.nome: Nome do bolão
+label.aposta.dezena.marcar: Quantidade de dezenas
 label.bolao.apostador.nome: Nome
 label.bolao.apostador.email: E-mail
 label.bolao.apostador.celular: Celular

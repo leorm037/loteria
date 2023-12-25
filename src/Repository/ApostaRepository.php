@@ -18,6 +18,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<Aposta>
@@ -106,6 +107,25 @@ class ApostaRepository extends ServiceEntityRepository
                         ->getQuery()
                         ->getResult()
         ;
+    }
+
+    public function findByUuid(Uuid $uuid): ?Aposta
+    {
+        return $this->createQueryBuilder('a')
+                        ->where('a.id = :id')
+                        ->setParameter('id', $uuid->toBinary())
+                        ->getQuery()
+                        ->getOneOrNullResult()
+        ;
+    }
+
+    public function remove(Aposta $aposta, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($aposta);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
     }
 
     //    /**

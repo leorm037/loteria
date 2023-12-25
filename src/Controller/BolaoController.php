@@ -23,10 +23,8 @@ use App\Repository\ConcursoRepository;
 use App\Security\Voter\BolaoVoter;
 use App\Security\Voter\UserEmailIsVerifiedVoter;
 use App\Service\BolaoComprovateApostaUploaderService;
-use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\MimeTypes;
@@ -196,7 +194,7 @@ class BolaoController extends AbstractController
 
         $this->denyAccessUnlessGranted(BolaoVoter::DOWNLOAD, $bolao);
 
-        $dateTime = new DateTime();
+        $dateTime = new \DateTime();
         $fileName = strtolower($this->slugger->slug($bolao->getNome())).'_'.$dateTime->format('Ymdhis');
         $fileExtension = pathinfo($bolao->getComprovanteAposta(), \PATHINFO_EXTENSION);
         $fileNameDownload = $fileName.'.'.$fileExtension;
@@ -220,7 +218,7 @@ class BolaoController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['GET'], requirements: ['id' => '[0-9a-f]{8}-[0-9a-f]{4}-6[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}'])]
-    public function delete(Request $request): JsonResponse
+    public function delete(Request $request): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
@@ -232,7 +230,9 @@ class BolaoController extends AbstractController
         $bolao = $this->bolaoRepository->findById($uuidBolao, $usuario);
 
         if (null === $bolao) {
-            return $this->json(['message' => 'error'], JsonResponse::HTTP_NOT_FOUND);
+            $this->addFlash('warning', 'Este bolão não foi encontrado para excluir.');
+
+            return $this->redirect('app_bolao_index');
         }
 
         $this->denyAccessUnlessGranted(BolaoVoter::DELETE, $bolao);
@@ -244,7 +244,7 @@ class BolaoController extends AbstractController
 
         $this->addFlash('success', sprintf('O bolão "%s" foi excluído com sucesso.', $bolao->getNome()));
 
-        return $this->json(['message' => 'success'], JsonResponse::HTTP_OK);
+        return $this->redirectToRoute('app_bolao_index');
     }
 
     private function excluirBolaoComprovanteAposta(Bolao $bolao): void

@@ -51,7 +51,7 @@
                                         <a role="button" data-loading="true" href="{{ path('app_bolao_apostador_index', {'idBolao': i.bolao.id}) }}" class="btn btn-sm btn-secondary">
                                             <i class="bi bi-people"></i> <span class="d-none d-xl-inline-block">Apostadores</span>
                                         </a>
-                                        <a role="button" data-loading="true" href="{{ path('app_bolao_aposta_index', {'id': i.bolao.id}) }}" class="btn btn-sm btn-secondary">
+                                        <a role="button" data-loading="true" href="{{ path('app_bolao_aposta_index', {'idBolao': i.bolao.id}) }}" class="btn btn-sm btn-secondary">
                                             <i class="bi bi-ticket-perforated"></i> <span class="d-none d-xl-inline-block">Apostas</span>
                                         </a>
                                         {% if i.bolao.comprovanteAposta and is_granted('BOLAO_DOWNLOAD', i.bolao) %}

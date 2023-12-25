@@ -21,7 +21,6 @@ use App\Security\Voter\BolaoApostadorVoter;
 use App\Service\BolaoComprovateApostadorUploaderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\MimeTypes;
@@ -105,7 +104,7 @@ class BolaoApostadorController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        $uuid = Uuid::fromString($request->get('id'));
+        $uuid = Uuid::fromString($request->get('idBolao'));
 
         $usuario = $this->getUser();
 
@@ -138,7 +137,7 @@ class BolaoApostadorController extends AbstractController
 
             $this->addFlash('success', 'O apostador foi salvo com sucesso.');
 
-            return $this->redirectToRoute('app_bolao_apostador_index', ['id' => $bolao->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_bolao_apostador_index', ['idBolao' => $bolao->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('bolao/apostador/new.html.twig', [
@@ -242,22 +241,28 @@ class BolaoApostadorController extends AbstractController
     }
 
     #[Route(
-        '/apostador/{idApostador}/delete',
+        '/{idBolao}/apostador/{idApostador}/delete',
         name: 'delete',
         methods: ['GET'],
-        requirements: ['idApostador' => '[0-9a-f]{8}-[0-9a-f]{4}-6[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}']
+        requirements: [
+            'idBolao' => '[0-9a-f]{8}-[0-9a-f]{4}-6[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}',
+            'idApostador' => '[0-9a-f]{8}-[0-9a-f]{4}-6[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}',
+            ]
     )]
-    public function delete(Request $request): JsonResponse
+    public function delete(Request $request): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
+        $idBolao = $request->get('idBolao');
         $idApostador = $request->get('idApostador');
         $uuidApostador = Uuid::fromString($idApostador);
 
         $apostador = $this->apostadorRepository->findById($uuidApostador);
 
         if (null === $apostador) {
-            return $this->json(['message' => 'error'], JsonResponse::HTTP_NOT_FOUND);
+            $this->addFlash('warning', 'Este apostador não foi encontrado para excluir.');
+
+            return $this->redirectToRoute('app_bolao_apostador_index', ['idBolao' => $idBolao], Response::HTTP_SEE_OTHER);
         }
 
         $this->denyAccessUnlessGranted(BolaoApostadorVoter::DELETE, $apostador->getBolao());
@@ -270,6 +275,6 @@ class BolaoApostadorController extends AbstractController
 
         $this->addFlash('success', 'Apostador foi excluído com sucesso.');
 
-        return $this->json(['message' => 'success'], JsonResponse::HTTP_OK);
+        return $this->redirectToRoute('app_bolao_apostador_index', ['idBolao' => $idBolao], Response::HTTP_SEE_OTHER);
     }
 }

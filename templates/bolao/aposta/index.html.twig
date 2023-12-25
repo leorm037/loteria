@@ -38,7 +38,18 @@
                                 <td class="text-end">{{ aposta.dezena|join(', ') }}</td>
                                 <td class="text-end">{{ aposta.acerto|default('-') }}</td>
                                 <td class="text-center">{{ (aposta.isConferido) ? 'Sim' : 'Não' }}</td>
-                                <td class="text-center"></td>
+                                <td class="text-center">
+                                    {% if is_granted('BOLAO_APOSTA_DELETE', aposta) %}
+                                        <a role="button" data-delete="{{ aposta.id }}" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i> <span class="d-none d-xl-inline-block">Excluir</span>
+                                        </a>
+                                    {% endif %}
+                                    {% if is_granted('BOLAO_APOSTA_EDIT', aposta) %}
+                                        <a data-loading="true" href="{{ path('app_bolao_aposta_edit', {'idBolao': bolao.id, 'idAposta': aposta.id}) }}" class="btn btn-sm btn-secondary shadow-sm">
+                                            <i class="bi bi-pencil-square"></i> <span class="d-none d-lg-inline-block">Alterar</span>
+                                        </a>
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% else %}
                             <tr>
@@ -53,9 +64,14 @@
             {% include '_paginator.html.twig' %}
         </div>
     </div>
+    {{ include('_delete_modal.html.twig') }}
 {% endblock %}
 
 {% block javascripts_footer %}
     {{ parent() }}
     <script type="text/javascript" src="{{ asset('js/_paginator.js') }}"></script>
+    <script>
+        const ENTITY_URL = "/bolao/{{ bolao.id }}/aposta";
+    </script>
+    <script type="text/javascript" src="{{ asset('js/_delete_modal.js') }}"></script>
 {% endblock %}
