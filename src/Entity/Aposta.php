@@ -22,7 +22,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
 class Aposta extends AbstractEntity
 {
-
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]

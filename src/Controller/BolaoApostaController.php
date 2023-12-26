@@ -34,17 +34,15 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/bolao', name: 'app_bolao_aposta_')]
 class BolaoApostaController extends AbstractController
 {
-
     private BolaoRepository $bolaoRepository;
     private ApostaRepository $apostaRepository;
     private ValidatorInterface $validator;
 
     public function __construct(
-            BolaoRepository $bolaoRepository,
-            ValidatorInterface $validator,
-            ApostaRepository $apostaRepository
-    )
-    {
+        BolaoRepository $bolaoRepository,
+        ValidatorInterface $validator,
+        ApostaRepository $apostaRepository
+    ) {
         $this->bolaoRepository = $bolaoRepository;
         $this->apostaRepository = $apostaRepository;
         $this->validator = $validator;
@@ -70,9 +68,9 @@ class BolaoApostaController extends AbstractController
         ;
 
         $apostas = $this->apostaRepository->listPesquisar(
-                $bolao,
-                $paginator->getFirstResult(),
-                $paginator->getMaxResult()
+            $bolao,
+            $paginator->getFirstResult(),
+            $paginator->getMaxResult()
         );
 
         $paginator->setResult($apostas);
@@ -84,13 +82,13 @@ class BolaoApostaController extends AbstractController
     }
 
     #[Route(
-                '{idBolao}/aposta/{idAposta}/edit',
-                name: 'edit',
-                requirements: [
+        '{idBolao}/aposta/{idAposta}/edit',
+        name: 'edit',
+        requirements: [
             'idBolao' => '[0-9a-f]{8}-[0-9a-f]{4}-6[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}',
             'idAposta' => '[0-9a-f]{8}-[0-9a-f]{4}-6[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}',
-                ]
-        )]
+        ]
+    )]
     public function edit(Request $request): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
@@ -109,7 +107,7 @@ class BolaoApostaController extends AbstractController
         $bolaoApostaDTO
                 ->setIdLoteria($bolao->getConcurso()->getLoteria()->getId())
                 ->setDezenas($aposta->getDezena())
-                ->setDezenasMarcar(count($aposta->getDezena()))
+                ->setDezenasMarcar(\count($aposta->getDezena()))
         ;
 
         $form = $this->createForm(BolaoApostaFormType::class, $bolaoApostaDTO);
@@ -119,8 +117,8 @@ class BolaoApostaController extends AbstractController
             $aposta->setDezena($bolaoApostaDTO->getDezenas());
 
             $violations = $this->validator->validate(
-                    $aposta->getDezena(),
-                    [new ArrayValueNotRepeat()]
+                $aposta->getDezena(),
+                [new ArrayValueNotRepeat()]
             );
 
             if ($violations->count() > 0) {
@@ -180,8 +178,8 @@ class BolaoApostaController extends AbstractController
             ;
 
             $violations = $this->validator->validate(
-                    $aposta->getDezena(),
-                    [new ArrayValueNotRepeat()]
+                $aposta->getDezena(),
+                [new ArrayValueNotRepeat()]
             );
 
             if ($violations->count() > 0) {
@@ -257,8 +255,8 @@ class BolaoApostaController extends AbstractController
                 ;
 
                 $violations = $this->validator->validate(
-                        $aposta->getDezena(),
-                        [new ArrayValueNotRepeat()]
+                    $aposta->getDezena(),
+                    [new ArrayValueNotRepeat()]
                 );
 
                 if ($violations->count() > 0) {
@@ -302,14 +300,14 @@ class BolaoApostaController extends AbstractController
     }
 
     #[Route(
-                '/{idBolao}/aposta/{idAposta}/delete',
-                name: 'delete',
-                methods: ['GET'],
-                requirements: [
+        '/{idBolao}/aposta/{idAposta}/delete',
+        name: 'delete',
+        methods: ['GET'],
+        requirements: [
             'idBolao' => '[0-9a-f]{8}-[0-9a-f]{4}-6[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}',
             'idAposta' => '[0-9a-f]{8}-[0-9a-f]{4}-6[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}',
-                ]
-        )]
+        ]
+    )]
     public function delete(Request $request): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');

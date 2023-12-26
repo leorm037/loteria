@@ -20,7 +20,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class BolaoApostaVoter extends Voter
 {
-
     public const NEW = 'BOLAO_APOSTA_NEW';
     public const EDIT = 'BOLAO_APOSTA_EDIT';
     public const DELETE = 'BOLAO_APOSTA_DELETE';

@@ -27,7 +27,7 @@
                             <th>Concurso</th>
                             <th class="d-none d-none d-xl-table-cell">Apostadores</th>
                             <th class="d-none d-none d-xl-table-cell">Apostas</th>
-                            <th>Total</th>
+                            <th class="d-none d-none d-md-table-cell">Total</th>
                             <th class="text-center">Ações</th>
                         </tr>
                     </thead>
@@ -39,7 +39,7 @@
                                 <td class="text-end">{{ i.bolao.concurso.numero }}</td>
                                 <td class="text-end d-none d-xl-table-cell">{{ i.apostadores }}</td>
                                 <td class="text-end d-none d-xl-table-cell">{{ i.apostas }}</td>
-                                <td class="text-end">
+                                <td class="text-end text-end d-none d-md-table-cell">
                                     <span class="badge text-bg-secondary" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Quantidade de cotas">
                                         {{ (i.total > 0) ? i.total : 0 }}
                                         <span class="visually-hidden">cotas</span>

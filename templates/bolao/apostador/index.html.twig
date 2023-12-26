@@ -80,7 +80,7 @@
                                         {% endif %}
                                         {% if is_granted('BOLAO_APOSTADOR_DELETE', apostador) %}
                                             <a role="button" data-delete="{{ apostador.id }}" class="btn btn-sm btn-danger">
-                                                <i class="bi bi-trash"></i> <span class="d-none d-xl-inline-block">Excluir</span>
+                                                <i class="bi bi-trash"></i> <span class="d-none d-gl-inline-block">Excluir</span>
                                             </a>
                                         {% endif %}
                                         <a data-loading="true" href="{{ path('app_bolao_apostador_edit', {'idApostador': apostador.id}) }}" class="btn btn-sm btn-secondary shadow-sm">

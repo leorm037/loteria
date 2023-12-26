@@ -115,6 +115,13 @@
         ],
         "code:fix": [
             "php-cs-fixer fix --ansi"
+        ],
+        "test:application": [
+            "php bin/console cache:clear --no-warmup --env=test",
+            "php bin/console doctrine:database:drop --force --if-exists --env=test",
+            "php bin/console doctrine:database:create --if-not-exists --env=test",
+            "php bin/console doctrine:schema:create --env=test",
+            "php bin/phpunit tests/Controller --testdox"
         ]
     },
     "conflict": {

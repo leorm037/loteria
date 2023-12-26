@@ -26,7 +26,6 @@ use Symfony\Component\Uid\Uuid;
 
 class BolaoApostaFormType extends AbstractType
 {
-
     private LoteriaRepository $loteriaRepository;
 
     public function __construct(LoteriaRepository $loteriaRepository)
@@ -47,7 +46,7 @@ class BolaoApostaFormType extends AbstractType
                     'required' => true,
                     'attr' => [
                         'autofocus' => true,
-                    ]
+                    ],
                 ])
                 ->add('dezenas', CollectionType::class, [
                     'entry_type' => IntegerType::class,
@@ -81,8 +80,8 @@ class BolaoApostaFormType extends AbstractType
         $loteria = $this->loteriaRepository->findById($uuidLoteria);
 
         $dezenasQuantidade = array_combine(
-                $loteria->getMarcar(),
-                $loteria->getMarcar()
+            $loteria->getMarcar(),
+            $loteria->getMarcar()
         );
 
         $form
@@ -93,7 +92,7 @@ class BolaoApostaFormType extends AbstractType
                     'required' => true,
                     'attr' => [
                         'autofocus' => true,
-                    ]
+                    ],
                 ])
                 ->add('dezenas', CollectionType::class, [
                     'entry_type' => IntegerType::class,
@@ -133,8 +132,8 @@ class BolaoApostaFormType extends AbstractType
         $loteria = $this->loteriaRepository->findById($uuidLoteria);
 
         $dezenasQuantidade = array_combine(
-                $loteria->getMarcar(),
-                $loteria->getMarcar()
+            $loteria->getMarcar(),
+            $loteria->getMarcar()
         );
 
         $form
@@ -146,7 +145,7 @@ class BolaoApostaFormType extends AbstractType
                     'required' => true,
                     'attr' => [
                         'autofocus' => true,
-                    ]
+                    ],
                 ])
                 ->add('dezenas', CollectionType::class, [
                     'entry_type' => IntegerType::class,

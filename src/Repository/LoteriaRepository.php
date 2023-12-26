@@ -65,6 +65,15 @@ class LoteriaRepository extends ServiceEntityRepository
         ;
     }
 
+    public function save(Loteria $loteria, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($loteria);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
     //    /**
     //     * @return Loteria[] Returns an array of Loteria objects
     //     */
