@@ -1,11 +1,11 @@
-{# templates/bolao/apostador/index.html.twig #}
+{# templates/bolao/aposta/index.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ parent() }} :: Bolão :: Apostador :: Novo{% endblock %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a data-loading="true" href="{{ path('app_bolao_index') }}" class="text-decoration-none"><i class="fa-regular fa-futbol"></i> Bolão</a></li>
-    <li class="breadcrumb-item"><a data-loading="true" href="{{ path('app_bolao_apostador_index', {'idBolao': bolao.id}) }}" class="text-decoration-none"><i class="bi bi-ticket-perforated"></i> Aposta</a></li>
+    <li class="breadcrumb-item"><a data-loading="true" href="{{ path('app_bolao_aposta_index', {'idBolao': bolao.id}) }}" class="text-decoration-none"><i class="bi bi-ticket-perforated"></i> Aposta</a></li>
     <li class="breadcrumb-item active"><i class="bi bi-plus"></i> Novo</li>
     {% endblock %}
 
@@ -30,4 +30,13 @@
         </div>
     </div>
     {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts_footer %}
+    {{ parent() }}
+    <script>
+        const DEZENAS_MIN = {{ min(bolao.concurso.loteria.dezena) }};
+        const DEZENAS_MAX = {{ max(bolao.concurso.loteria.dezena) }};
+    </script>
+    <script type="text/javascript" src="{{ asset('js/bolao/aposta/_form.js') }}"></script>
 {% endblock %}

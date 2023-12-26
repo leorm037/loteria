@@ -11,6 +11,7 @@
 
 namespace App\Security\Voter;
 
+use App\Entity\Apostador;
 use App\Entity\Bolao;
 use App\Entity\Usuario;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -29,7 +30,7 @@ class BolaoApostadorVoter extends Voter
     {
         return \in_array($attribute, [
                         self::NEW, self::LIST, self::EDIT, self::DOWNLOAD, self::DELETE,
-                ]) && $subject instanceof Bolao;
+                ]) && ($subject instanceof Bolao || $subject instanceof Apostador);
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
@@ -77,8 +78,8 @@ class BolaoApostadorVoter extends Voter
         return $user === $bolao->getUsuario();
     }
 
-    private function canDelete(Usuario $user, Bolao $bolao): bool
+    private function canDelete(Usuario $user, Apostador $apostador): bool
     {
-        return $user === $bolao->getUsuario();
+        return $user === $apostador->getBolao()->getUsuario() && !$apostador->isIsPago();
     }
 }

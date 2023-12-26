@@ -45,6 +45,9 @@ class BolaoApostaFormType extends AbstractType
                     'placeholder' => 'form.select.placeholder',
                     'help' => 'help.aposta.dezena.marcar',
                     'required' => true,
+                    'attr' => [
+                        'autofocus' => true,
+                    ]
                 ])
                 ->add('dezenas', CollectionType::class, [
                     'entry_type' => IntegerType::class,
@@ -53,7 +56,7 @@ class BolaoApostaFormType extends AbstractType
                         'label' => false,
                         'required' => true,
                         'row_attr' => [
-                            'class' => 'col-2 mb-3',
+                            'class' => 'col-3 col-md-2 mb-3',
                         ],
                     ],
                     'label' => 'Dezenas',
@@ -82,14 +85,15 @@ class BolaoApostaFormType extends AbstractType
                 $loteria->getMarcar()
         );
 
-        asort($bolaoApostaDTO['dezenas'], \SORT_NUMERIC);
-
         $form
                 ->add('dezenasMarcar', ChoiceType::class, [
                     'choices' => $dezenasQuantidade,
                     'label' => 'label.aposta.dezena.marcar',
                     'placeholder' => 'help.aposta.dezena.marcar',
                     'required' => true,
+                    'attr' => [
+                        'autofocus' => true,
+                    ]
                 ])
                 ->add('dezenas', CollectionType::class, [
                     'entry_type' => IntegerType::class,
@@ -98,7 +102,7 @@ class BolaoApostaFormType extends AbstractType
                         'label' => false,
                         'required' => true,
                         'row_attr' => [
-                            'class' => 'col-2 mb-3',
+                            'class' => 'col-3 col-md-2 mb-3',
                         ],
                         'attr' => [
                             'min' => min($loteria->getDezena()),
@@ -140,6 +144,9 @@ class BolaoApostaFormType extends AbstractType
                     'placeholder' => 'form.select.placeholder',
                     'help' => 'help.aposta.dezena.marcar',
                     'required' => true,
+                    'attr' => [
+                        'autofocus' => true,
+                    ]
                 ])
                 ->add('dezenas', CollectionType::class, [
                     'entry_type' => IntegerType::class,
@@ -148,7 +155,7 @@ class BolaoApostaFormType extends AbstractType
                         'label' => false,
                         'required' => true,
                         'row_attr' => [
-                            'class' => 'col-2 mb-3',
+                            'class' => 'col-3 col-md-2 mb-3',
                         ],
                         'attr' => [
                             'min' => min($loteria->getDezena()),

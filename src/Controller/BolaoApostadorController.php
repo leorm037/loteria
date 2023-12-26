@@ -188,7 +188,7 @@ class BolaoApostadorController extends AbstractController
 
             $this->addFlash('success', 'O apostador foi atualizado com sucesso.');
 
-            return $this->redirectToRoute('app_bolao_apostador_index', ['id' => $apostador->getBolao()->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_bolao_apostador_index', ['idBolao' => $apostador->getBolao()->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('bolao/apostador/edit.html.twig', [
@@ -265,7 +265,7 @@ class BolaoApostadorController extends AbstractController
             return $this->redirectToRoute('app_bolao_apostador_index', ['idBolao' => $idBolao], Response::HTTP_SEE_OTHER);
         }
 
-        $this->denyAccessUnlessGranted(BolaoApostadorVoter::DELETE, $apostador->getBolao());
+        $this->denyAccessUnlessGranted(BolaoApostadorVoter::DELETE, $apostador);
 
         if (file_exists($apostador->getComprovante())) {
             $this->fileUpload->delete($apostador->getComprovante());

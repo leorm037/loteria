@@ -15,7 +15,6 @@ use App\DTO\BolaoApostaDTO;
 use App\DTO\BolaoApostaImportDTO;
 use App\DTO\PaginatorDTO;
 use App\Entity\Aposta;
-use App\Entity\Bolao;
 use App\Form\BolaoApostaFormType;
 use App\Form\BolaoApostaImportFormType;
 use App\Helper\CsvReaderHelper;
@@ -94,6 +93,8 @@ class BolaoApostaController extends AbstractController
         )]
     public function edit(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         $idBolao = $request->get('idBolao');
         $uuidBolao = Uuid::fromString($idBolao);
         $bolao = $this->bolaoRepository->findByUuid($uuidBolao);
@@ -101,6 +102,8 @@ class BolaoApostaController extends AbstractController
         $idAposta = $request->get('idAposta');
         $uuidAposta = Uuid::fromString($idAposta);
         $aposta = $this->apostaRepository->findByUuid($uuidAposta);
+
+        $this->denyAccessUnlessGranted(BolaoApostaVoter::EDIT, $aposta);
 
         $bolaoApostaDTO = new BolaoApostaDTO();
         $bolaoApostaDTO
@@ -114,10 +117,27 @@ class BolaoApostaController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $aposta->setDezena($bolaoApostaDTO->getDezenas());
-            
+
+            $violations = $this->validator->validate(
+                    $aposta->getDezena(),
+                    [new ArrayValueNotRepeat()]
+            );
+
+            if ($violations->count() > 0) {
+                /** @var ConstraintViolationInterface $violation */
+                foreach ($violations as $violation) {
+                    $this->addFlash('danger', $violation->getMessage());
+                }
+
+                return $this->renderForm('bolao/aposta/new.html.twig', [
+                            'bolao' => $bolao,
+                            'form' => $form,
+                ]);
+            }
+
             $this->apostaRepository->save($aposta, true);
 
-            $this->addFlash('success', 'A aposta "%s" foi atualizada com sucesso.');
+            $this->addFlash('success', sprintf('A aposta "%s" foi atualizada com sucesso.', implode(', ', $aposta->getDezena())));
 
             return $this->redirectToRoute('app_bolao_aposta_index', ['idBolao' => $bolao->getId()]);
         }
@@ -137,11 +157,60 @@ class BolaoApostaController extends AbstractController
         $uuidBolao = Uuid::fromString($idBolao);
         $bolao = $this->bolaoRepository->findByUuid($uuidBolao);
 
-        $aposta = new Aposta();
-        $aposta->setBolao($bolao);
-        $form = $this->createForm(BolaoApostaFormType::class, $aposta);
+        $this->denyAccessUnlessGranted(BolaoApostaVoter::NEW, $bolao);
 
-        $this->denyAccessUnlessGranted(BolaoApostaVoter::NEW, $aposta);
+        $bolaoApostaDTO = new BolaoApostaDTO();
+        $bolaoApostaDTO
+                ->setIdLoteria($bolao->getConcurso()->getLoteria()->getId())
+                ->setDezenas([null])
+        ;
+
+        $form = $this->createForm(BolaoApostaFormType::class, $bolaoApostaDTO);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $usuario = $this->getUser();
+
+            $aposta = new Aposta();
+            $aposta
+                    ->setBolao($bolao)
+                    ->setConcurso($bolao->getConcurso())
+                    ->setDezena($bolaoApostaDTO->getDezenas())
+                    ->setUsuario($usuario)
+            ;
+
+            $violations = $this->validator->validate(
+                    $aposta->getDezena(),
+                    [new ArrayValueNotRepeat()]
+            );
+
+            if ($violations->count() > 0) {
+                /** @var ConstraintViolationInterface $violation */
+                foreach ($violations as $violation) {
+                    $this->addFlash('danger', $violation->getMessage());
+                }
+
+                return $this->renderForm('bolao/aposta/new.html.twig', [
+                            'bolao' => $bolao,
+                            'form' => $form,
+                ]);
+            }
+
+            if ($this->isDezenasCadastradasBolao($aposta)) {
+                $this->addFlash('danger', sprintf('As dezenas "%s" já foram cadastradas no bolão.', implode(', ', $aposta->getDezena())));
+
+                return $this->renderForm('bolao/aposta/new.html.twig', [
+                            'bolao' => $bolao,
+                            'form' => $form,
+                ]);
+            }
+
+            $this->apostaRepository->save($aposta, true);
+
+            $this->addFlash('success', sprintf('A aposta "%s" foi salva com sucesso.', implode(', ', $aposta->getDezena())));
+
+            return $this->redirectToRoute('app_bolao_aposta_index', ['idBolao' => $bolao->getId()]);
+        }
 
         return $this->renderForm('bolao/aposta/new.html.twig', [
                     'bolao' => $bolao,
@@ -149,7 +218,7 @@ class BolaoApostaController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/aposta/import', name: 'import')]
+    #[Route('/{idBolao}/aposta/import', name: 'import')]
     public function import(Request $request): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
@@ -159,7 +228,7 @@ class BolaoApostaController extends AbstractController
 
         $bolao = $this->bolaoRepository->findById($uuid, $usuario);
 
-        $this->denyAccessUnlessGranted(BolaoApostaVoter::EDIT, $aposta);
+        $this->denyAccessUnlessGranted(BolaoApostaVoter::IMPORT, $bolao);
 
         $bolaoApostaImport = new BolaoApostaImportDTO();
         $bolaoApostaImport->setBolao($bolao);

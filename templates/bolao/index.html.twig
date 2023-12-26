@@ -48,25 +48,25 @@
                                 </td>
                                 <td>
                                     <div class="d-grid gap-1 d-md-block text-center">
-                                        <a role="button" data-loading="true" href="{{ path('app_bolao_apostador_index', {'idBolao': i.bolao.id}) }}" class="btn btn-sm btn-secondary">
-                                            <i class="bi bi-people"></i> <span class="d-none d-xl-inline-block">Apostadores</span>
+                                        <a role="button" data-bs-toggle="tooltip" data-bs-title="Apostadores" data-loading="true" href="{{ path('app_bolao_apostador_index', {'idBolao': i.bolao.id}) }}" class="btn btn-sm btn-secondary">
+                                            <i class="bi bi-people"></i>
                                         </a>
-                                        <a role="button" data-loading="true" href="{{ path('app_bolao_aposta_index', {'idBolao': i.bolao.id}) }}" class="btn btn-sm btn-secondary">
-                                            <i class="bi bi-ticket-perforated"></i> <span class="d-none d-xl-inline-block">Apostas</span>
+                                        <a role="button" data-bs-toggle="tooltip" data-bs-title="Apostas" data-loading="true" href="{{ path('app_bolao_aposta_index', {'idBolao': i.bolao.id}) }}" class="btn btn-sm btn-secondary">
+                                            <i class="bi bi-ticket-perforated"></i>
                                         </a>
                                         {% if i.bolao.comprovanteAposta and is_granted('BOLAO_DOWNLOAD', i.bolao) %}
-                                            <a role="button" href="{{ path('app_bolao_download', {'id': i.bolao.id}) }}" class="btn btn-sm btn-secondary">
-                                                <i class="bi bi-file-arrow-down"></i> <span class="d-none d-xl-inline-block">Comprovante</span>
+                                            <a role="button" data-bs-toggle="tooltip" data-bs-title="Comprovante" href="{{ path('app_bolao_download', {'id': i.bolao.id}) }}" class="btn btn-sm btn-secondary">
+                                                <i class="bi bi-file-arrow-down"></i>
                                             </a>
                                         {% endif %}
                                         {% if is_granted('BOLAO_DELETE', i.bolao) %}
-                                            <a role="button" data-delete="{{ i.bolao.id }}" class="btn btn-sm btn-danger">
-                                                <i class="bi bi-trash"></i> <span class="d-none d-xl-inline-block">Excluir</span>
+                                            <a role="button" data-bs-toggle="tooltip" data-bs-title="Excluir" data-delete="{{ i.bolao.id }}" class="btn btn-sm btn-danger">
+                                                <i class="bi bi-trash"></i>
                                             </a>
                                         {% endif %}
                                         {% if is_granted('BOLAO_EDIT', i.bolao) %}
-                                            <a role="button" data-loading="true" href="{{ path('app_bolao_edit', {'id': i.bolao.id}) }}" class="btn btn-sm btn-secondary">
-                                                <i class="bi bi-pencil-square"></i> <span class="d-none d-xl-inline-block">Alterar</span>
+                                            <a role="button" data-bs-toggle="tooltip" data-bs-title="Alterar" data-loading="true" href="{{ path('app_bolao_edit', {'id': i.bolao.id}) }}" class="btn btn-sm btn-secondary">
+                                                <i class="bi bi-pencil-square"></i>
                                             </a>
                                         {% endif %}
                                     </div>
